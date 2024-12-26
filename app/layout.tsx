@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/globals.css";
-import { cn } from "@/util/cn";
+import { cn } from "@/utils/cn";
 import Link from "next/link";
 
 const inter = Inter({
