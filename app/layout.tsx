@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "@/styles/globals.css";
+import { cn } from "@/util/cn";
+import Link from "next/link";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
   subsets: ["latin"],
 });
 
@@ -24,7 +20,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={cn("antialiased flex flex-col h-dvh", inter.className)}>
+        <div className="grid grid-cols-[1fr_min-content_1fr] items-center p-3 mx-auto w-full max-w-7xl">
+          <div>clash.sundell.dev</div>
+          <div className="flex gap-8 text-primary-dark">
+            <Link href="/" className="flex justify-center text-primary">
+              Tracking{" "}
+              <div className="absolute top-0 w-2 h-1 rounded-b-full border-r border-b border-l bg-accent border-accent" />
+            </Link>
+            <Link href="/">Calculator</Link>
+            <Link href="/">Data</Link>
+          </div>
+          <div className="flex gap-2 justify-self-end">
+            <button className="grid place-content-center p-3 rounded-full border transition-colors bg-primary border-primary hover:bg-primary-light">
+              <span className="icon-[solar--settings-linear]" />
+            </button>
+            <button className="grid place-content-center p-3 rounded-full border transition-colors bg-primary border-primary hover:bg-primary-light">
+              <span className="icon-[solar--repeat-linear]" />
+            </button>
+            <div className="flex items-center rounded-full border bg-primary border-primary">
+              <div className="pr-3 pl-4 text-text-primary-dark">Beus</div>
+              <button className="px-3 h-full rounded-full border transition-colors bg-accent border-accent hover:bg-accent">
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
