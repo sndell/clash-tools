@@ -10,7 +10,12 @@ export default {
     extend: {
       colors: {
         background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "var(--primary)",
+        accent: "var(--accent)",
+        "text-primary": "var(--text-primary)",
+        "text-primary-dark": "var(--text-primary-dark)",
+        "border-primary": "var(--border-primary)",
+        "border-accent": "var(--border-accent)",
       },
     },
   },
