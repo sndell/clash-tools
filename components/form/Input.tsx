@@ -11,18 +11,20 @@ type Props = {
 
 export const Input = ({ registration, error, type = "text", isRequired = false, label, placeholder }: Props) => {
   return (
-    <label className="space-y-1">
+    <label>
       <div className="text-sm font-medium">
         {label}
-        {isRequired && <span className="text-error">*</span>}
-        {error && <span className="font-normal text-error"> {error.message}</span>}
+        {isRequired && <span className="text-accent">*</span>}
       </div>
       <input
         type={type}
         placeholder={placeholder}
         {...registration}
-        className="w-full px-3 py-2 border bg-background rounded-full border-primary"
+        className={`w-full px-4 py-2 border placeholder:text-primary-dark bg-background focus:outline-none rounded-full ${
+          error ? "border-error" : "border-primary"
+        }`}
       />
+      {error && <p className="mt-1 text-xs text-error">{error.message}</p>}
     </label>
   );
 };

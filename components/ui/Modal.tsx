@@ -1,5 +1,3 @@
-import { cn } from "@/utils/cn";
-
 type Props = {
   children: React.ReactNode;
   close: () => void;

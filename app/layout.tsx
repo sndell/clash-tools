@@ -5,7 +5,7 @@ import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { headers } from "next/headers";
 import { auth as authentication } from "@/lib/auth";
-import { AuthButton } from "@/features/auth";
+import { AuthButton, UserControls } from "@/features/auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,24 +41,7 @@ export default async function RootLayout({
             <Link href="/">Data</Link>
           </div>
           <div className="flex gap-2 justify-self-end">
-            {session ? (
-              <>
-                <button className="grid place-content-center p-3 rounded-full border transition-colors bg-primary border-primary hover:bg-primary-light">
-                  <span className="icon-[solar--settings-linear]" />
-                </button>
-                <button className="grid place-content-center p-3 rounded-full border transition-colors bg-primary border-primary hover:bg-primary-light">
-                  <span className="icon-[solar--repeat-linear]" />
-                </button>
-                <div className="flex items-center rounded-full border bg-primary border-primary">
-                  <div className="pr-3 pl-4 text-text-primary-dark">{session.user.name}</div>
-                  <button className="px-3 h-full rounded-full border transition-colors bg-accent border-accent hover:bg-accent">
-                    Logout
-                  </button>
-                </div>
-              </>
-            ) : (
-              <AuthButton />
-            )}
+            {session ? <UserControls username={session.user.name} /> : <AuthButton />}
           </div>
         </div>
         {children}

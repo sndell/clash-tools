@@ -1,82 +1,41 @@
 "use client";
 
 import { Modal } from "@/components/ui/Modal";
-import { authClient } from "@/lib/auth-client";
-import { useState } from "react";
 import { LoginForm } from "./LoginForm";
+import { useState } from "react";
+import { RegisterForm } from "./RegisterForm";
 
 type Props = {
   close: () => void;
 };
 
 export const AuthModal = ({ close }: Props) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-
-  const signup = async () => {
-    const { data, error } = await authClient.signUp.email(
-      {
-        email,
-        password,
-        name: username,
-      },
-      {
-        onRequest: (ctx) => {
-          console.log(ctx);
-        },
-        onSuccess: (ctx) => {
-          console.log(ctx);
-        },
-        onError: (ctx) => {
-          alert(ctx.error.message);
-        },
-      }
-    );
-  };
+  const [authMode, setAuthMode] = useState<"login" | "register">("login");
+  const toggleAuthMode = () => setAuthMode(authMode === "login" ? "register" : "login");
 
   return (
-    <Modal close={close} className="bg-primary border p-3 border-primary rounded-[20px]">
-      <LoginForm />
-      {/* <div className="p-3 bg-primary border border-primary rounded-[20px] flex flex-col gap-3">
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center">
-          <div />
-          <div>Login</div>
-          <div className="flex justify-end">
-            <button className="px-3 py-2 rounded-full border bg-background border-primary">
-              <span className="icon-[clarity--window-close-line]" />
+    <Modal close={close} className="bg-primary border p-3 border-primary rounded-[20px] space-y-3">
+      {authMode === "login" ? (
+        <>
+          <LoginForm />
+          <div className="text-center text-primary-dark">
+            No account?{" "}
+            <button onClick={toggleAuthMode} className="transition-colors text-accent hover:text-accent-light">
+              Register
             </button>
           </div>
-        </div>
-
-        <input
-          type="email"
-          value={email}
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          className="px-3 py-2 text-sm rounded-full border appearance-none bg-background border-primary"
-        />
-
-        <input
-          type="password"
-          value={password}
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          className="px-3 py-2 text-sm rounded-full border appearance-none bg-background border-primary"
-        />
-
-        <input
-          type="username"
-          value={username}
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-          className="px-3 py-2 text-sm rounded-full border appearance-none bg-background border-primary"
-        />
-
-        <button onClick={signup} className="py-2 text-sm rounded-full border bg-accent border-accent">
-          Login
-        </button>
-      </div> */}
+        </>
+      ) : (
+        <>
+          <RegisterForm />
+          <div className="text-center text-primary-dark">
+            Already registered?{" "}
+            <button onClick={toggleAuthMode} className="transition-colors text-accent hover:text-accent-light">
+              Login
+            </button>
+          </div>
+        </>
+      )}
     </Modal>
   );
 };

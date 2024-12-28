@@ -9,13 +9,14 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 3,
   },
   databaseHooks: {
     user: {
       create: {
         before: async (user) => {
-          if (user.name.length > 12 || user.name.length < 2) {
-            throw new APIError("BAD_REQUEST", { message: "Name must be between 2 and 12 characters" });
+          if (user.name.length > 12 || user.name.length < 3) {
+            throw new APIError("BAD_REQUEST", { message: "Name must be between 3 and 12 characters", code: "NAME_TOO_LONG" });
           }
           return {
             data: user,
