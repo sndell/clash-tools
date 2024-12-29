@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Modal } from './Modal';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 
 type NavItem = {
   href: string;
@@ -50,7 +50,10 @@ const NavLink = ({ item, isActive, className = '' }: { item: NavItem; isActive: 
   >
     {item.label}
     {isActive && (
-      <div className="absolute top-0 w-2 h-1 border-b border-l border-r rounded-b-full bg-accent border-accent max-sm:hidden" />
+      <motion.div
+        layoutId="nav-indicator"
+        className="absolute top-0 w-2 h-1 border-b border-l border-r rounded-b-full bg-accent border-accent max-sm:hidden"
+      />
     )}
   </Link>
 );

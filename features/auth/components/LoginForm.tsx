@@ -4,6 +4,7 @@ import { Input } from '@/components/form/Input';
 import { LoginFormSchema, LoginFormValues } from '@/features/auth/schema';
 import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -46,7 +47,13 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full gap-3">
+    <motion.form
+      initial={{ translateX: '32px' }}
+      animate={{ translateX: '0' }}
+      exit={{ translateX: '32px' }}
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col w-full gap-3"
+    >
       <Input registration={register('email')} error={errors.email} type="email" placeholder="Enter your email" />
       <Input
         registration={register('password')}
@@ -57,6 +64,6 @@ export const LoginForm = () => {
       <button className="grid place-content-center py-2 max-sm:py-2.5 rounded-full border transition-colors bg-accent border-accent hover:bg-accent-light">
         {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Login'}
       </button>
-    </form>
+    </motion.form>
   );
 };
