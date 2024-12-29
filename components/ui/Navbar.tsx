@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Modal } from './Modal';
+import { AnimatePresence } from 'motion/react';
 
 type NavItem = {
   href: string;
@@ -28,8 +29,8 @@ export const Navbar = () => {
         className="grid p-3 transition-colors border rounded-full place-content-center bg-primary border-primary hover:bg-primary-light w-fit sm:hidden"
       >
         <span className="icon-[solar--hamburger-menu-linear] text-xl" />
-        <MobileNav isOpen={isOpen} onClose={() => setIsOpen(false)} pathname={pathname} />
       </button>
+      <AnimatePresence>{isOpen && <MobileNav close={() => setIsOpen(false)} pathname={pathname} />}</AnimatePresence>
       <div className="flex gap-8 text-primary-dark max-sm:hidden">
         {NAV_ITEMS.map((item) => (
           <NavLink key={item.href} item={item} isActive={pathname === item.href} />
@@ -54,11 +55,9 @@ const NavLink = ({ item, isActive, className = '' }: { item: NavItem; isActive: 
   </Link>
 );
 
-const MobileNav = ({ isOpen, onClose, pathname }: { isOpen: boolean; onClose: () => void; pathname: string }) => {
-  if (!isOpen) return null;
-
+const MobileNav = ({ close, pathname }: { close: () => void; pathname: string }) => {
   return (
-    <Modal close={onClose} className="border w-full rounded-[21px] border-primary bg-primary">
+    <Modal close={close} className="w-full border rounded-[23px] border-primary bg-primary">
       {NAV_ITEMS.map((item) => (
         <NavLink
           key={item.href}

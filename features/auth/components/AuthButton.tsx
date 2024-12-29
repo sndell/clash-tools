@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { createPortal } from 'react-dom';
 import { AuthModal } from './AuthModal';
+import { AnimatePresence } from 'motion/react';
 
 export const AuthButton = () => {
   const [isAuthModelOpen, setIsAuthModelOpen] = useState(false);
@@ -18,7 +18,7 @@ export const AuthButton = () => {
       >
         Login / Register
       </button>
-      {isAuthModelOpen && createPortal(<AuthModal close={toggleAuthModel} />, document.body)}
+      <AnimatePresence>{isAuthModelOpen && <AuthModal close={toggleAuthModel} />}</AnimatePresence>
     </>
   );
 };
