@@ -24,7 +24,7 @@ export const UserControls = ({ username }: Props) => {
         <span className="icon-[solar--repeat-linear] max-sm:text-xl" />
       </button>
       <div className="flex items-center border rounded-full bg-primary border-primary">
-        <div className="pl-4 pr-3 text-text-primary-dark">{username}</div>
+        <div className="pl-4 pr-3 truncate text-text-primary-dark max-w-40">{username}</div>
         <button
           onClick={logout}
           className="h-full px-3 transition-colors border rounded-full bg-accent border-accent hover:bg-accent-light"

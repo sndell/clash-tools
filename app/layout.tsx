@@ -4,8 +4,7 @@ import '@/styles/globals.css';
 import { cn } from '@/utils/cn';
 import { headers } from 'next/headers';
 import { auth as authentication } from '@/lib/auth';
-import { AuthButton, UserControls } from '@/features/auth';
-import { Navbar } from '@/components/ui/Navbar';
+import { Header } from '@/components/ui/Header';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,13 +29,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={cn('antialiased flex flex-col h-dvh', inter.className)}>
-        <div className="grid grid-cols-[1fr_min-content_1fr] max-lg:grid-cols-2 items-center p-3 gap-2 mx-auto w-full max-w-7xl">
-          <div className="max-lg:hidden">clash.sundell.dev</div>
-          <Navbar />
-          <div className="flex gap-2 justify-self-end">
-            {session ? <UserControls username={session.user.name} /> : <AuthButton />}
-          </div>
-        </div>
+        <Header username={session?.user.name} />
         {children}
         {auth}
       </body>
