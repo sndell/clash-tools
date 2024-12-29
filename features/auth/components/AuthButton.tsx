@@ -1,7 +1,7 @@
-"use client";
-import { useState } from "react";
-import { createPortal } from "react-dom";
-import { AuthModal } from "./AuthModal";
+'use client';
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
+import { AuthModal } from './AuthModal';
 
 export const AuthButton = () => {
   const [isAuthModelOpen, setIsAuthModelOpen] = useState(false);
@@ -14,7 +14,7 @@ export const AuthButton = () => {
     <>
       <button
         onClick={toggleAuthModel}
-        className="px-3 py-2 h-full block rounded-full border transition-colors bg-accent border-accent hover:bg-accent"
+        className="px-4 py-2 max-sm:py-2.5 h-full block rounded-full border transition-colors bg-accent border-accent hover:bg-accent"
       >
         Login / Register
       </button>

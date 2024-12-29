@@ -46,7 +46,7 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full gap-3">
       <Input registration={register('email')} error={errors.email} type="email" placeholder="Enter your email" />
       <Input
         registration={register('password')}
@@ -54,7 +54,7 @@ export const LoginForm = () => {
         type="password"
         placeholder="Enter your password"
       />
-      <button className="grid place-content-center py-2 rounded-full border transition-colors bg-accent border-accent hover:bg-accent-light">
+      <button className="grid place-content-center py-2 max-sm:py-2.5 rounded-full border transition-colors bg-accent border-accent hover:bg-accent-light">
         {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Login'}
       </button>
     </form>
