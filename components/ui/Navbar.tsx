@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Tracking' },
   { href: '/calculator', label: 'Calculator' },
   { href: '/data', label: 'Data' },
+  { href: '/bases', label: 'Bases' },
 ] as const;
 
 export const Navbar = () => {
