@@ -17,3 +17,7 @@ type Building = {
     supercharge?: boolean;
   }[];
 };
+
+type BuildingWithTownHallAmount = Building & {
+  number_available: number;
+};

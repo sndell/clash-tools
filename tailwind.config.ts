@@ -14,6 +14,7 @@ export default {
         background: 'var(--background)',
         primary: 'var(--primary)',
         'primary-light': 'var(--border-primary)',
+        'primary-dark': 'var(--primary-dark)',
         accent: 'var(--accent)',
         'accent-light': 'var(--accent-light)',
       },
