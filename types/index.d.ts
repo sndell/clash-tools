@@ -15,6 +15,7 @@ type Building = {
     build_time: number; // sec
     town_hall: number;
     supercharge?: boolean;
+    image_name: string;
   }[];
 };
 

@@ -120,7 +120,7 @@ type Player = {
   donationsReceived: number;
   clanCapitalContributions: number;
   clan: Clan;
-  league: League;
+  league?: League;
   builderBaseLeague: BuilderBaseLeague;
   legendStatistics: LegendStatistics;
   achievements: Achievement[];
@@ -141,5 +141,5 @@ type FormattedPlayer = {
   troops: Troop[];
   spells: Spell[];
   expLevel: number;
-  league: League;
+  league?: League;
 };

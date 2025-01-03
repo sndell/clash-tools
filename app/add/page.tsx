@@ -1,4 +1,4 @@
-import { AddForm } from '@/features/account';
+import { AddAccount } from '@/features/account';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -9,5 +9,5 @@ export default async function AddPage() {
   });
   if (!session) redirect('/');
 
-  return <AddForm />;
+  return <AddAccount />;
 }

@@ -7,8 +7,9 @@ import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
 import { allBuildings } from '@/data/structures';
+import Image from 'next/image';
 
-export const AddForm = () => {
+export const AddAccount = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [player, setPlayer] = useState<FormattedPlayer | null>(null);
   const [isSettingLevels, setIsSettingLevels] = useState(false);
@@ -33,6 +34,8 @@ export const AddForm = () => {
     }
 
     setPlayer(result.data);
+    console.log(result.data);
+
     setIsLoading(false);
   };
 
@@ -59,12 +62,7 @@ export const AddForm = () => {
             clearPlayer={clearPlayer}
           />
         )}
-        <FooterActions
-          isSettingLevels={isSettingLevels}
-          player={player}
-          toggleSettingLevels={toggleIsSettingLevels}
-          clearPlayer={clearPlayer}
-        />
+        <FooterActions isSettingLevels={isSettingLevels} player={player} toggleSettingLevels={toggleIsSettingLevels} clearPlayer={clearPlayer} />
       </div>
     </div>
   );
@@ -92,10 +90,7 @@ const FooterActions = ({
       </button>
     ) : (
       <div className="flex w-full gap-3">
-        <button
-          onClick={clearPlayer}
-          className="grid p-3 border rounded-full place-items-center bg-background hover:bg-primary-light border-primary"
-        >
+        <button onClick={clearPlayer} className="grid p-3 border rounded-full place-items-center bg-background hover:bg-primary-light border-primary">
           <span className="icon-[solar--trash-bin-minimalistic-outline]" />
         </button>
         <button
@@ -111,6 +106,8 @@ const FooterActions = ({
 );
 
 const BuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
+  const [buildingLevels, setBuildingLevels] = useState<{ [buildingName: string]: number }>({});
+
   const buildings = allBuildings
     .filter(({ name, amount_per_town_hall }) => {
       const buildingLevel = amount_per_town_hall.find((level) => level.level === townHallLevel);
@@ -135,6 +132,16 @@ const BuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
       levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
     }));
 
+  const handleBuildingClick = (buildingName: string, maxLevel: number) => {
+    setBuildingLevels((prevState) => {
+      const currentLevel = prevState[buildingName] || 0;
+      const newLevel = currentLevel < maxLevel ? currentLevel + 1 : 0;
+      return {
+        ...prevState,
+        [buildingName]: newLevel,
+      };
+    });
+  };
   return (
     <div className="grid flex-1 divide-x divide-y divide-primary grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-scroll scrollbar-slim border border-primary rounded-2.5xl bg-background">
       {buildings.map((building, index) => (
@@ -142,11 +149,21 @@ const BuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
           <div className="p-3">{building.name}</div>
           {Array.from({ length: building.numberAvailable }, (_, i) => (
             <button
+              onClick={() => handleBuildingClick(`${building.name}${i}`, building.levels.length)}
               key={i}
               className="flex items-center justify-between px-3 py-2 transition-colors group hover:bg-primary-light"
             >
-              <div className="text-sm">
-                <span className="text-primary-dark">Level</span> 0 / {building.levels.length}
+              <div className="flex items-center gap-3 text-sm">
+                <Image
+                  src={`/images${
+                    building.levels[buildingLevels[`${building.name}${i}`] > 0 ? buildingLevels[`${building.name}${i}`] - 1 : 0]?.image_name
+                  }`}
+                  alt="image"
+                  width={56}
+                  height={56}
+                  className="object-contain border aspect-square border-primary rounded-2.5xl p-1 bg-black"
+                />
+                <div className="text-primary-dark">Level</div> {buildingLevels[`${building.name}${i}`] || 0} / {building.levels.length}
               </div>
               <div className="grid p-2 transition-colors border rounded-full place-items-center bg-primary border-primary group-hover:bg-primary-light">
                 <span className="icon-[solar--pen-linear]" />
@@ -161,9 +178,7 @@ const BuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
 
 const HeaderBanner = ({ isSettingLevels }: { isSettingLevels: boolean }) => (
   <div className="px-3 pb-3">
-    <h1 className="px-3 py-2 text-xl text-center text-primary">
-      {isSettingLevels ? 'Set building levels' : 'Add account'}
-    </h1>
+    <h1 className="px-3 py-2 text-xl text-center text-primary">{isSettingLevels ? 'Set building levels' : 'Add account'}</h1>
     <p className="px-3 pb-3 text-center text-primary-dark">
       {isSettingLevels
         ? 'Select the building levels of the account you want to add.'
@@ -208,8 +223,10 @@ const AccountForm = ({
 const PlayerCard = ({ player, clearPlayer }: { player: FormattedPlayer; clearPlayer: () => void }) => (
   <div className="flex flex-col gap-2 border rounded-2.5xl bg-background border-primary">
     <div className="flex items-center gap-3 p-3 border-b border-primary rounded-b-2.5xl">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={player.league.iconUrls.small} alt={player.league.name} className="h-10 aspect-square" />
+      {player.league && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={player.league.iconUrls.small} alt={player.league.name} className="h-10 aspect-square" />
+      )}
       <div className="flex flex-col">
         <div className="flex items-center gap-2">
           <span>{player.name}</span>
@@ -218,10 +235,7 @@ const PlayerCard = ({ player, clearPlayer }: { player: FormattedPlayer; clearPla
         <span className="text-sm text-primary-dark">{player.tag}</span>
       </div>
       <div className="flex justify-end flex-1">
-        <button
-          onClick={clearPlayer}
-          className="grid p-3 border rounded-full place-items-center bg-primary border-primary max-sm:text-xl"
-        >
+        <button onClick={clearPlayer} className="grid p-3 border rounded-full place-items-center bg-primary border-primary max-sm:text-xl">
           <span className="icon-[solar--trash-bin-minimalistic-outline] max-sm:text-xl" />
         </button>
       </div>
@@ -246,11 +260,7 @@ const LevelLoading = ({ interval, label, amount }: { interval: number; label: st
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        {isLoading ? (
-          <span className="icon-[svg-spinners--90-ring-with-bg]" />
-        ) : (
-          <span className="icon-[solar--check-circle-bold]" />
-        )}
+        {isLoading ? <span className="icon-[svg-spinners--90-ring-with-bg]" /> : <span className="icon-[solar--check-circle-bold]" />}
         <span>{label}</span>
       </div>
       {!isLoading && <div className="text-sm text-primary-dark">{amount}</div>}

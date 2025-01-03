@@ -1,2 +1,2 @@
 export * from './components/AccountCheck';
-export * from './components/AddForm';
+export * from './components/AddAccount';
