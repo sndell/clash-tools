@@ -30,6 +30,9 @@ export default {
         accent: 'var(--accent-light)',
         error: 'var(--error)',
       },
+      borderRadius: {
+        '2.5xl': '1.25rem',
+      },
     },
   },
   plugins: [addDynamicIconSelectors()],
