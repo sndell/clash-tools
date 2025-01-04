@@ -9,6 +9,7 @@ import { Modal } from '@/components/ui/Modal';
 import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { verifyAccount } from '../actions';
+import { cn } from '@/utils/cn';
 
 export const AddAccount = () => {
   const [isSettingLevels, setIsSettingLevels] = useState(false);
@@ -27,18 +28,18 @@ export const AddAccount = () => {
     resolver: zodResolver(AddFormSchema),
     defaultValues: {
       tag: '',
-      token: '',
+      // token: '',
     },
   });
 
   const verifyPlayer = async (data: AddFormValues) => {
     setIsLoading(true);
     try {
-      const result = await verifyAccount(data.tag, data.token);
+      const result = await verifyAccount(data.tag);
 
       if (result.error || !result.data) {
         const errorMessage = 'Invalid API Token or Tag';
-        setError('token', { message: errorMessage });
+        // setError('token', { message: errorMessage });
         setError('tag', { message: errorMessage });
         return null;
       }
@@ -47,7 +48,7 @@ export const AddAccount = () => {
       return result.data;
     } catch (error) {
       console.error('Error verifying account:', error);
-      setError('token', { message: 'Verification failed' });
+      // setError('token', { message: 'Verification failed' });
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +157,13 @@ const BuildingList = ({ townHallLevel }: { townHallLevel: number }) => {
         <div key={index} className="flex flex-col bg-primary-dark">
           <div className="px-3 pt-3">{building.name}</div>
           {Array.from({ length: building.numberAvailable }, (_, i) => (
-            <Building building={building} handleLevelUpdate={handleLevelUpdate} i={i} buildingLevels={buildingLevels} key={i} />
+            <Building
+              building={building}
+              handleLevelUpdate={handleLevelUpdate}
+              selectedBuilding={`${building.name}${i}`}
+              buildingLevels={buildingLevels}
+              key={i}
+            />
           ))}
         </div>
       ))}
@@ -167,12 +174,12 @@ const BuildingList = ({ townHallLevel }: { townHallLevel: number }) => {
 const Building = ({
   building,
   handleLevelUpdate,
-  i,
+  selectedBuilding,
   buildingLevels,
 }: {
   building: Building;
-  handleLevelUpdate: (buildingName: string, level: number, maxLevel: number) => void;
-  i: number;
+  handleLevelUpdate: (buildingName: string, level: number) => void;
+  selectedBuilding: string;
   buildingLevels: { [buildingName: string]: number };
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -180,16 +187,16 @@ const Building = ({
 
   return (
     <>
-      <div key={i} className="flex items-center justify-between px-3 py-2">
+      <div key={selectedBuilding} className="flex items-center justify-between px-3 py-2">
         <div className="flex items-center gap-3 text-sm">
           <Image
-            src={`/images${building.levels[buildingLevels[`${building.name}${i}`] > 0 ? buildingLevels[`${building.name}${i}`] - 1 : 0]?.image_name}`}
+            src={`/images${building.levels[buildingLevels[selectedBuilding] > 0 ? buildingLevels[selectedBuilding] - 1 : 0]?.image_name}`}
             alt="image"
             width={56}
             height={56}
             className="object-contain border aspect-square border-primary rounded-2.5xl p-1 bg-primary"
           />
-          <div className="text-primary-dark">Level</div> {buildingLevels[`${building.name}${i}`] || 0} / {building.levels.length}
+          <div className="text-primary-dark">Level</div> {buildingLevels[selectedBuilding] || 0} / {building.levels.length}
         </div>
         <button
           onClick={toggleModal}
@@ -203,14 +210,37 @@ const Building = ({
           close={toggleModal}
           className="w-full max-h-full sm:max-w-60 flex flex-col items-center divide-y divide-primary overflow-y-auto scrollbar-slim  border rounded-2.5xl border-primary bg-primary"
         >
+          <button
+            onClick={() => {
+              handleLevelUpdate(selectedBuilding, 0);
+              toggleModal();
+            }}
+            key={0}
+            className={cn(
+              'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
+              !buildingLevels[selectedBuilding] && 'bg-primary-light'
+            )}
+          >
+            <Image
+              src={`/images${building.levels[0].image_name}`}
+              alt="image"
+              width={32}
+              height={32}
+              className="object-contain aspect-square opacity-50"
+            />
+            <div>Level 0</div>
+          </button>
           {building.levels.map((level) => (
             <button
               onClick={() => {
-                handleLevelUpdate(`${building.name}${i}`, level.level, building.levels.length);
+                handleLevelUpdate(selectedBuilding, level.level);
                 toggleModal();
               }}
               key={level.level}
-              className="flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light"
+              className={cn(
+                'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
+                buildingLevels[selectedBuilding] === level.level && 'bg-primary-light'
+              )}
             >
               <Image src={`/images${level.image_name}`} alt="image" width={32} height={32} className="object-contain aspect-square" />
               <div>Level {level.level}</div>
@@ -252,12 +282,12 @@ const AccountForm = ({
     {!player ? (
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
         <Input registration={register('tag')} error={errors.tag} type="text" placeholder="Player Tag" />
-        <Input registration={register('token')} error={errors.token} type="text" placeholder="Token" />
+        {/* <Input registration={register('token')} error={errors.token} type="text" placeholder="Token" /> */}
         <button
           disabled={!!player || isLoading}
           className="py-2 border rounded-2.5xl bg-background border-primary grid place-content-center enabled:hover:bg-primary disabled:opacity-50"
         >
-          {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Verify account'}
+          {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Load account'}
         </button>
       </form>
     ) : (
