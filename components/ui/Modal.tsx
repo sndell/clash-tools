@@ -8,7 +8,7 @@ type Props = {
 
 export const Modal = ({ children, close, className }: Props) => {
   return (
-    <div onMouseDown={close} className="absolute inset-0 z-10 grid px-3 place-items-center bg-black/50">
+    <div onMouseDown={close} className="absolute inset-0 z-10 grid p-3 overflow-y-scroll scrollbar-slim place-items-center bg-black/50">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

@@ -45,9 +45,7 @@ const NavLink = ({ item, isActive, className = '' }: { item: NavItem; isActive: 
   <Link
     key={item.href}
     href={item.href}
-    className={`flex justify-center ${
-      isActive ? 'text-primary' : 'hover:text-primary text-primary-dark transition-colors'
-    } ${className}`}
+    className={`flex justify-center ${isActive ? 'text-primary' : 'hover:text-primary text-primary-dark transition-colors'} ${className}`}
   >
     {item.label}
     {isActive && (

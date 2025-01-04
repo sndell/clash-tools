@@ -1012,11 +1012,11 @@ export const seekingAirMine: Building = {
   ],
   levels: [
     { level: 1, cost: { gold: 12000 }, build_time: 0, town_hall: 7, image_name: '/seeking-air-mine/Seeking_Air_Mine1.webp' },
-    { level: 2, cost: { gold: 900000 }, build_time: 43200, town_hall: 9, image_name: '/seeking-air-mine/Seeking_Air_Mine2.webp' },
+    { level: 2, cost: { gold: 900000 }, build_time: 43200, town_hall: 9, image_name: '/seeking-air-mine/Seeking_Air_Mine1.webp' },
     { level: 3, cost: { gold: 1600000 }, build_time: 86400, town_hall: 10, image_name: '/seeking-air-mine/Seeking_Air_Mine3.webp' },
-    { level: 4, cost: { gold: 3100000 }, build_time: 259200, town_hall: 13, image_name: '/seeking-air-mine/Seeking_Air_Mine4.webp' },
+    { level: 4, cost: { gold: 3100000 }, build_time: 259200, town_hall: 13, image_name: '/seeking-air-mine/Seeking_Air_Mine3.webp' },
     { level: 5, cost: { gold: 6000000 }, build_time: 432000, town_hall: 15, image_name: '/seeking-air-mine/Seeking_Air_Mine5.webp' },
-    { level: 6, cost: { gold: 10500000 }, build_time: 828000, town_hall: 16, image_name: '/seeking-air-mine/Seeking_Air_Mine6.webp' },
+    { level: 6, cost: { gold: 10500000 }, build_time: 828000, town_hall: 16, image_name: '/seeking-air-mine/Seeking_Air_Mine5.webp' },
     { level: 7, cost: { gold: 14000000 }, build_time: 864000, town_hall: 17, image_name: '/seeking-air-mine/Seeking_Air_Mine7.webp' },
   ],
 };
@@ -1671,9 +1671,9 @@ export const blacksmith: Building = {
     { level: 12, amount: 1 },
     { level: 13, amount: 1 },
     { level: 14, amount: 1 },
-    { level: 15, amount: 2 },
-    { level: 16, amount: 2 },
-    { level: 17, amount: 2 },
+    { level: 15, amount: 1 },
+    { level: 16, amount: 1 },
+    { level: 17, amount: 1 },
   ],
   levels: [
     { level: 1, cost: { elixir: 750000 }, build_time: 86400, town_hall: 8, image_name: '/blacksmith/Blacksmith1.webp' },
@@ -1758,6 +1758,8 @@ export const petHouse: Building = {
 };
 
 export const allBuildings: Building[] = [
+  multiArcherTower,
+  ricochetCannon,
   cannon,
   archerTower,
   mortar,
@@ -1775,8 +1777,6 @@ export const allBuildings: Building[] = [
   monolith,
   firespitter,
   wall,
-  multiArcherTower,
-  ricochetCannon,
   gigaTesla,
   gigaInferno13,
   gigaInferno14,

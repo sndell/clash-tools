@@ -12,6 +12,7 @@ export default {
     extend: {
       backgroundColor: {
         background: 'var(--background)',
+        'background-dark': 'var(--background-dark)',
         primary: 'var(--primary)',
         'primary-light': 'var(--border-primary)',
         'primary-dark': 'var(--primary-dark)',
