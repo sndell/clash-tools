@@ -8,15 +8,14 @@ import Image from 'next/image';
 import { Modal } from '@/components/ui/Modal';
 import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { verifyAccount } from '../actions';
 import { cn } from '@/utils/cn';
+import { usePlayerVerification } from '../hooks/usePlayerVerification';
+import { useBuildingLevels } from '../hooks/useBuildingLevels';
 
 export const AddAccount = () => {
   const [isSettingLevels, setIsSettingLevels] = useState(false);
   const toggleIsSettingLevels = () => setIsSettingLevels(!isSettingLevels);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [player, setPlayer] = useState<FormattedPlayer | null>(null);
+  const { isLoading, player, setPlayer, verifyPlayer } = usePlayerVerification();
 
   const {
     register,
@@ -28,29 +27,13 @@ export const AddAccount = () => {
     resolver: zodResolver(AddFormSchema),
     defaultValues: {
       tag: '',
-      // token: '',
     },
   });
 
-  const verifyPlayer = async (data: AddFormValues) => {
-    setIsLoading(true);
-    try {
-      const result = await verifyAccount(data.tag);
-
-      if (result.error || !result.data) {
-        const errorMessage = 'Invalid API Token or Tag';
-        // setError('token', { message: errorMessage });
-        setError('tag', { message: errorMessage });
-        return null;
-      }
-
-      setPlayer(result.data);
-      return result.data;
-    } catch (error) {
-      console.error('Error verifying account:', error);
-      // setError('token', { message: 'Verification failed' });
-    } finally {
-      setIsLoading(false);
+  const handleVerification = async (data: AddFormValues) => {
+    const result = await verifyPlayer(data.tag);
+    if (result.error) {
+      setError('tag', { message: result.error });
     }
   };
 
@@ -67,7 +50,7 @@ export const AddAccount = () => {
           <BuildingList townHallLevel={player.townHallLevel} />
         ) : (
           <AccountForm
-            onSubmit={handleSubmit(verifyPlayer)}
+            onSubmit={handleSubmit(handleVerification)}
             register={register}
             errors={errors}
             isLoading={isLoading}
@@ -75,7 +58,12 @@ export const AddAccount = () => {
             clearPlayer={clearPlayer}
           />
         )}
-        <FooterActions isSettingLevels={isSettingLevels} player={player} toggleSettingLevels={toggleIsSettingLevels} clearPlayer={clearPlayer} />
+        <FooterActions
+          isSettingLevels={isSettingLevels}
+          player={player}
+          toggleSettingLevels={toggleIsSettingLevels}
+          clearPlayer={clearPlayer}
+        />
       </div>
     </div>
   );
@@ -103,7 +91,10 @@ const FooterActions = ({
       </button>
     ) : (
       <div className="flex w-full gap-3">
-        <button onClick={clearPlayer} className="grid p-3 border rounded-full place-items-center bg-background hover:bg-primary-light border-primary">
+        <button
+          onClick={clearPlayer}
+          className="grid p-3 border rounded-full place-items-center bg-background hover:bg-primary-light border-primary"
+        >
           <span className="icon-[solar--trash-bin-minimalistic-outline]" />
         </button>
         <button
@@ -119,35 +110,28 @@ const FooterActions = ({
 );
 
 const BuildingList = ({ townHallLevel }: { townHallLevel: number }) => {
-  const [buildingLevels, setBuildingLevels] = useState<{ [buildingName: string]: number }>({});
-  const handleLevelUpdate = (buildingId: string, level: number) => {
-    setBuildingLevels((prev) => ({
-      ...prev,
-      [buildingId]: level,
-    }));
-  };
+  const { buildingLevels, updateLevel } = useBuildingLevels();
+  const EXCLUDED_BUILDINGS = [
+    'Inferno Artillery',
+    'Giga Tesla',
+    'Barracks',
+    'Dark Barracks',
+    'Spell Factory',
+    'Dark Spell Factory',
+    'Workshop',
+    'Pet House',
+    'Wall',
+  ];
 
   const buildings = allBuildings
     .filter(({ name, amount_per_town_hall }) => {
       const buildingLevel = amount_per_town_hall.find((level) => level.level === townHallLevel);
-      return (
-        buildingLevel?.amount &&
-        ![
-          'Inferno Artillery',
-          'Giga Tesla',
-          'Barracks',
-          'Dark Barracks',
-          'Spell Factory',
-          'Dark Spell Factory',
-          'Workshop',
-          'Pet House',
-          'Wall',
-        ].includes(name)
-      );
+      return buildingLevel?.amount && !EXCLUDED_BUILDINGS.includes(name);
     })
     .map((building) => ({
       ...building,
-      numberAvailable: building.amount_per_town_hall.find((level) => level.level === townHallLevel)?.amount || 0,
+      numberAvailable:
+        building.amount_per_town_hall.find((level) => level.level === townHallLevel)?.amount || 0,
       levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
     }));
 
@@ -159,7 +143,7 @@ const BuildingList = ({ townHallLevel }: { townHallLevel: number }) => {
           {Array.from({ length: building.numberAvailable }, (_, i) => (
             <Building
               building={building}
-              handleLevelUpdate={handleLevelUpdate}
+              handleLevelUpdate={updateLevel}
               selectedBuilding={`${building.name}${i}`}
               buildingLevels={buildingLevels}
               key={i}
@@ -190,13 +174,18 @@ const Building = ({
       <div key={selectedBuilding} className="flex items-center justify-between px-3 py-2">
         <div className="flex items-center gap-3 text-sm">
           <Image
-            src={`/images${building.levels[buildingLevels[selectedBuilding] > 0 ? buildingLevels[selectedBuilding] - 1 : 0]?.image_name}`}
+            src={`/images${
+              building.levels[
+                buildingLevels[selectedBuilding] > 0 ? buildingLevels[selectedBuilding] - 1 : 0
+              ]?.image_name
+            }`}
             alt="image"
             width={56}
             height={56}
             className="object-contain border aspect-square border-primary rounded-2.5xl p-1 bg-primary"
           />
-          <div className="text-primary-dark">Level</div> {buildingLevels[selectedBuilding] || 0} / {building.levels.length}
+          <div className="text-primary-dark">Level</div> {buildingLevels[selectedBuilding] || 0} /{' '}
+          {building.levels.length}
         </div>
         <button
           onClick={toggleModal}
@@ -206,55 +195,85 @@ const Building = ({
         </button>
       </div>
       {isModalOpen && (
-        <Modal
-          close={toggleModal}
-          className="w-full max-h-full sm:max-w-60 flex flex-col items-center divide-y divide-primary overflow-y-auto scrollbar-slim  border rounded-2.5xl border-primary bg-primary"
-        >
-          <button
-            onClick={() => {
-              handleLevelUpdate(selectedBuilding, 0);
-              toggleModal();
-            }}
-            key={0}
-            className={cn(
-              'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
-              !buildingLevels[selectedBuilding] && 'bg-primary-light'
-            )}
-          >
-            <Image
-              src={`/images${building.levels[0].image_name}`}
-              alt="image"
-              width={32}
-              height={32}
-              className="object-contain aspect-square opacity-50"
-            />
-            <div>Level 0</div>
-          </button>
-          {building.levels.map((level) => (
-            <button
-              onClick={() => {
-                handleLevelUpdate(selectedBuilding, level.level);
-                toggleModal();
-              }}
-              key={level.level}
-              className={cn(
-                'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
-                buildingLevels[selectedBuilding] === level.level && 'bg-primary-light'
-              )}
-            >
-              <Image src={`/images${level.image_name}`} alt="image" width={32} height={32} className="object-contain aspect-square" />
-              <div>Level {level.level}</div>
-            </button>
-          ))}
-        </Modal>
+        <BuildingLevelSelect
+          building={building}
+          handleLevelUpdate={handleLevelUpdate}
+          buildingLevels={buildingLevels}
+          selectedBuilding={selectedBuilding}
+          toggleModal={toggleModal}
+        />
       )}
     </>
   );
 };
 
+const BuildingLevelSelect = ({
+  building,
+  handleLevelUpdate,
+  buildingLevels,
+  selectedBuilding,
+  toggleModal,
+}: {
+  building: Building;
+  handleLevelUpdate: (buildingName: string, level: number) => void;
+  buildingLevels: BuildingLevel;
+  selectedBuilding: string;
+  toggleModal: () => void;
+}) => {
+  const handleClick = (level: number) => {
+    handleLevelUpdate(selectedBuilding, level);
+    toggleModal();
+  };
+  return (
+    <Modal
+      close={toggleModal}
+      className="w-full max-h-full sm:max-w-60 flex flex-col items-center divide-y divide-primary overflow-y-auto scrollbar-slim  border rounded-2.5xl border-primary bg-primary"
+    >
+      <button
+        onClick={() => handleClick(0)}
+        key={0}
+        className={cn(
+          'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
+          !buildingLevels[selectedBuilding] && 'bg-primary-light'
+        )}
+      >
+        <Image
+          src={`/images${building.levels[0].image_name}`}
+          alt="image"
+          width={32}
+          height={32}
+          className="object-contain aspect-square opacity-50"
+        />
+        <div>Level 0</div>
+      </button>
+      {building.levels.map((level) => (
+        <button
+          onClick={() => handleClick(level.level)}
+          key={level.level}
+          className={cn(
+            'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
+            buildingLevels[selectedBuilding] === level.level && 'bg-primary-light'
+          )}
+        >
+          <Image
+            src={`/images${level.image_name}`}
+            alt="image"
+            width={32}
+            height={32}
+            className="object-contain aspect-square"
+          />
+          <div>Level {level.level}</div>
+        </button>
+      ))}
+    </Modal>
+  );
+};
+
 const HeaderBanner = ({ isSettingLevels }: { isSettingLevels: boolean }) => (
   <div className="px-3 pb-3">
-    <h1 className="px-3 py-2 text-xl text-center text-primary">{isSettingLevels ? 'Set building levels' : 'Add account'}</h1>
+    <h1 className="px-3 py-2 text-xl text-center text-primary">
+      {isSettingLevels ? 'Set building levels' : 'Add account'}
+    </h1>
     <p className="px-3 pb-3 text-center text-primary-dark">
       {isSettingLevels
         ? 'Select the building levels of the account you want to add.'
@@ -281,13 +300,22 @@ const AccountForm = ({
   <div className="flex flex-col flex-1 w-full gap-3 mx-auto max-w-96">
     {!player ? (
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <Input registration={register('tag')} error={errors.tag} type="text" placeholder="Player Tag" />
+        <Input
+          registration={register('tag')}
+          error={errors.tag}
+          type="text"
+          placeholder="Player Tag"
+        />
         {/* <Input registration={register('token')} error={errors.token} type="text" placeholder="Token" /> */}
         <button
           disabled={!!player || isLoading}
           className="py-2 border rounded-2.5xl bg-background border-primary grid place-content-center enabled:hover:bg-primary disabled:opacity-50"
         >
-          {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Load account'}
+          {isLoading ? (
+            <span className="icon-[svg-spinners--3-dots-scale] text-2xl" />
+          ) : (
+            'Load account'
+          )}
         </button>
       </form>
     ) : (
@@ -296,12 +324,22 @@ const AccountForm = ({
   </div>
 );
 
-const PlayerCard = ({ player, clearPlayer }: { player: FormattedPlayer; clearPlayer: () => void }) => (
+const PlayerCard = ({
+  player,
+  clearPlayer,
+}: {
+  player: FormattedPlayer;
+  clearPlayer: () => void;
+}) => (
   <div className="flex flex-col gap-2 border rounded-2.5xl bg-background border-primary">
     <div className="flex items-center gap-3 p-3 border-b border-primary rounded-b-2.5xl">
       {player.league && (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={player.league.iconUrls.small} alt={player.league.name} className="h-10 aspect-square" />
+        <img
+          src={player.league.iconUrls.small}
+          alt={player.league.name}
+          className="h-10 aspect-square"
+        />
       )}
       <div className="flex flex-col">
         <div className="flex items-center gap-2">
@@ -311,7 +349,10 @@ const PlayerCard = ({ player, clearPlayer }: { player: FormattedPlayer; clearPla
         <span className="text-sm text-primary-dark">{player.tag}</span>
       </div>
       <div className="flex justify-end flex-1">
-        <button onClick={clearPlayer} className="grid p-3 border rounded-full place-items-center bg-primary border-primary max-sm:text-xl">
+        <button
+          onClick={clearPlayer}
+          className="grid p-3 border rounded-full place-items-center bg-primary border-primary max-sm:text-xl"
+        >
           <span className="icon-[solar--trash-bin-minimalistic-outline] max-sm:text-xl" />
         </button>
       </div>
@@ -325,7 +366,15 @@ const PlayerCard = ({ player, clearPlayer }: { player: FormattedPlayer; clearPla
   </div>
 );
 
-const LevelLoading = ({ interval, label, amount }: { interval: number; label: string; amount: number }) => {
+const LevelLoading = ({
+  interval,
+  label,
+  amount,
+}: {
+  interval: number;
+  label: string;
+  amount: number;
+}) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -336,7 +385,11 @@ const LevelLoading = ({ interval, label, amount }: { interval: number; label: st
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        {isLoading ? <span className="icon-[svg-spinners--90-ring-with-bg]" /> : <span className="icon-[solar--check-circle-bold]" />}
+        {isLoading ? (
+          <span className="icon-[svg-spinners--90-ring-with-bg]" />
+        ) : (
+          <span className="icon-[solar--check-circle-bold]" />
+        )}
         <span>{label}</span>
       </div>
       {!isLoading && <div className="text-sm text-primary-dark">{amount}</div>}

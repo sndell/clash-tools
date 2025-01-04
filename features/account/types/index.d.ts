@@ -143,3 +143,7 @@ type FormattedPlayer = {
   expLevel: number;
   league?: League;
 };
+
+type BuildingLevel = {
+  [buildingName: string]: number;
+};
