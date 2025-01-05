@@ -70,7 +70,7 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
         if (!buildingState) return null;
         return (
           <div key={building.name} className="p-3">
-            <div className="pb-3">{building.name}</div>
+            {building.name}
             {buildingState.buildings.map((b, index) => (
               <Building
                 key={b.index}
@@ -103,7 +103,7 @@ const Building = ({
 
   return (
     <>
-      <div className="flex items-center gap-3 pb-3">
+      <div className="flex items-center gap-3 pt-3">
         <Image
           src={`/images${building.levels[level > 0 ? level - 1 : 0].image_name}`}
           alt={building.name}
