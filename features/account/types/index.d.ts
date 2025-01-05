@@ -145,5 +145,14 @@ type FormattedPlayer = {
 };
 
 type BuildingLevel = {
-  [buildingName: string]: number;
+  name: string;
+  buildings: {
+    index: number;
+    level: number;
+  }[];
+}[];
+
+type BuildingWithTownHallAmount = Building & {
+  number_available: number;
+  prev_number_available: number;
 };

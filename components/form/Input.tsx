@@ -11,15 +11,7 @@ type Props = {
   isDisabled?: boolean;
 };
 
-export const Input = ({
-  registration,
-  error,
-  type = 'text',
-  isRequired = false,
-  label,
-  placeholder,
-  isDisabled = false,
-}: Props) => {
+export const Input = ({ registration, error, type = 'text', isRequired = false, label, placeholder, isDisabled = false }: Props) => {
   return (
     <label>
       <div className="text-sm font-medium">

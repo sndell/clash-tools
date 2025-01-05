@@ -1,8 +1,8 @@
 type Building = {
-  category: 'defence' | 'trap' | 'army' | 'resource' | 'wall';
+  category: 'defence' | 'trap' | 'army' | 'resource' | 'wall' | 'town_hall';
   name: string;
   amount_per_town_hall: {
-    level: number;
+    th: number;
     amount: number;
   }[];
   levels: {
@@ -17,8 +17,4 @@ type Building = {
     supercharge?: boolean;
     image_name: string;
   }[];
-};
-
-type BuildingWithTownHallAmount = Building & {
-  number_available: number;
 };

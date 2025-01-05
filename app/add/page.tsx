@@ -7,7 +7,7 @@ export default async function AddPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-  if (!session) redirect('/');
 
+  if (!session) redirect('/');
   return <AddAccount />;
 }
