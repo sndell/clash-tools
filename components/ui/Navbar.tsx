@@ -41,10 +41,21 @@ export const Navbar = () => {
   );
 };
 
-const NavLink = ({ item, isActive, className = '' }: { item: NavItem; isActive: boolean; className?: string }) => (
+const NavLink = ({
+  item,
+  isActive,
+  className = '',
+  onClick,
+}: {
+  item: NavItem;
+  isActive: boolean;
+  className?: string;
+  onClick?: () => void;
+}) => (
   <Link
     key={item.href}
     href={item.href}
+    onClick={onClick}
     className={`flex justify-center ${isActive ? 'text-primary' : 'hover:text-primary text-primary-dark transition-colors'} ${className}`}
   >
     {item.label}
@@ -65,6 +76,7 @@ const MobileNav = ({ close, pathname }: { close: () => void; pathname: string })
           key={item.href}
           item={item}
           isActive={pathname === item.href}
+          onClick={close}
           className="py-3 [&:not(:last-child)]:border-b [&:not(:last-child)]:border-b-primary"
         />
       ))}

@@ -14,9 +14,9 @@ export const Header = async () => {
         <Suspense
           fallback={
             <div className="flex gap-2">
-              <div className="w-12 h-12 rounded-full bg-primary animate-pulse" />
-              <div className="w-12 h-12 rounded-full bg-primary animate-pulse" />
-              <div className="h-12 w-40 rounded-full bg-primary animate-pulse" />
+              <div className="w-10 h-10 max-sm:w-12 max-sm:h-12 rounded-full bg-primary animate-pulse" />
+              <div className="w-10 h-10 max-sm:w-12 max-sm:h-12 rounded-full bg-primary animate-pulse" />
+              <div className="h-10 w-40 max-sm:h-12 rounded-full bg-primary animate-pulse" />
             </div>
           }
         >
