@@ -4,14 +4,6 @@ import { allBuildings } from '@/data/structures';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useState } from 'react';
 
-type Action = 'add' | 'remove';
-type Building = (typeof allBuildings)[number];
-type BuildingWithAmount = Building & {
-  number_available: number;
-  prev_number_available: number;
-  levels: Building['levels'];
-};
-
 const EXCLUDED_BUILDINGS = [
   'Inferno Artillery',
   'Giga Tesla',
@@ -74,59 +66,53 @@ export const useBuildings = (townHallLevel: number) => {
     setBuildingLevels(levels);
   }, [buildings]);
 
-  const updateBuildingAmount = useCallback((buildingName: string, action: Action) => {
+  const updateLevel = useCallback((buildingName: string, index: number, level: number, isNewBuilding: boolean) => {
     setBuildingLevels((prev) => {
-      const buildingIndex = prev.findIndex((b) => b.name === buildingName);
-      if (buildingIndex === -1) return prev;
+      const updatedLevels = [...prev];
+      const buildingIndex = updatedLevels.findIndex((b) => b.name === buildingName);
 
-      const building = prev[buildingIndex];
-      const currentBuildings = [...building.buildings];
+      if (buildingIndex !== -1) {
+        updatedLevels[buildingIndex] = {
+          ...updatedLevels[buildingIndex],
+          buildings: updatedLevels[buildingIndex].buildings.map((b) => (b.index === index ? { ...b, level } : b)),
+        };
+      }
 
-      const newBuildings =
-        action === 'add'
-          ? [
-              ...currentBuildings.map((b) => ({ ...b, level: b.level === 0 ? 1 : b.level })),
-              { index: currentBuildings.length + 1, level: 1 },
-              { index: currentBuildings.length + 2, level: currentBuildings.some((b) => b.level === 0) ? 0 : 1 },
-            ]
-          : currentBuildings.slice(0, -2).map((b, i, arr) => ({
-              ...b,
-              level: i === arr.length - 1 && currentBuildings.some((b) => b.level === 0) ? 0 : b.level,
-            }));
+      if (isNewBuilding) {
+        const linkedBuilding = SPECIAL_BUILDINGS[buildingName as keyof typeof SPECIAL_BUILDINGS];
+        if (linkedBuilding) {
+          const currentLevel = prev[buildingIndex]?.buildings[index - 1]?.level ?? 0;
 
-      return prev.map((b, i) => (i === buildingIndex ? { ...building, buildings: newBuildings } : b));
+          if ((level > 0 && currentLevel === 0) || (level === 0 && currentLevel > 0)) {
+            const linkedBuildingIndex = updatedLevels.findIndex((b) => b.name === linkedBuilding);
+            if (linkedBuildingIndex !== -1) {
+              const building = updatedLevels[linkedBuildingIndex];
+              const currentBuildings = [...building.buildings];
+
+              const newBuildings =
+                level > 0
+                  ? currentBuildings.slice(0, -2).map((b, i, arr) => ({
+                      ...b,
+                      level: i === arr.length - 1 && currentBuildings.some((b) => b.level === 0) ? 0 : b.level,
+                    }))
+                  : [
+                      ...currentBuildings.map((b) => ({ ...b, level: b.level === 0 ? 1 : b.level })),
+                      { index: currentBuildings.length + 1, level: 1 },
+                      { index: currentBuildings.length + 2, level: currentBuildings.some((b) => b.level === 0) ? 0 : 1 },
+                    ];
+
+              updatedLevels[linkedBuildingIndex] = {
+                ...building,
+                buildings: newBuildings,
+              };
+            }
+          }
+        }
+      }
+
+      return updatedLevels;
     });
   }, []);
-
-  const handleMergedBuildings = useCallback(
-    (buildingName: string, currentLevel: number, newLevel: number) => {
-      const linkedBuilding = SPECIAL_BUILDINGS[buildingName as keyof typeof SPECIAL_BUILDINGS];
-      if (!linkedBuilding) return;
-
-      if (newLevel > 0 && currentLevel === 0) {
-        updateBuildingAmount(linkedBuilding, 'remove');
-      } else if (newLevel === 0 && currentLevel > 0) {
-        updateBuildingAmount(linkedBuilding, 'add');
-      }
-    },
-    [updateBuildingAmount]
-  );
-
-  const updateLevel = useCallback(
-    (buildingName: string, index: number, level: number, isNewBuilding: boolean) => {
-      setBuildingLevels((prev) =>
-        prev.map((building) => {
-          if (building.name !== buildingName) return building;
-          if (isNewBuilding) handleMergedBuildings(buildingName, building.buildings[index - 1]?.level, level);
-          return {
-            ...building,
-            buildings: building.buildings.map((b) => (b.index === index ? { ...b, level } : b)),
-          };
-        })
-      );
-    },
-    [handleMergedBuildings]
-  );
 
   return {
     buildings,

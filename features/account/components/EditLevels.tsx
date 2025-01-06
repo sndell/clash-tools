@@ -44,7 +44,7 @@ const Building = ({
   updateBuildingLevel,
   isNewBuilding,
 }: {
-  building: BuildingWithTownHallAmount;
+  building: BuildingWithAmount;
   level: number;
   updateBuildingLevel: (level: number) => void;
   isNewBuilding: boolean;
@@ -100,7 +100,7 @@ const BuildingLevelSelect = ({
   updateBuildingLevel: (level: number) => void;
   toggleModal: () => void;
   selectedLevel: number;
-  building: BuildingWithTownHallAmount;
+  building: BuildingWithAmount;
 }) => {
   const handleLevelClick = (level: number) => {
     updateBuildingLevel(level);

@@ -152,7 +152,7 @@ type BuildingLevel = {
   }[];
 }[];
 
-type BuildingWithTownHallAmount = Building & {
+type BuildingWithAmount = Building & {
   number_available: number;
   prev_number_available: number;
 };
