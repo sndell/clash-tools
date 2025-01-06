@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { cn } from '@/utils/cn';
-import { headers } from 'next/headers';
-import { auth as authentication } from '@/lib/auth';
 import { Header } from '@/components/ui/Header';
 
 const inter = Inter({
