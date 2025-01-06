@@ -618,8 +618,8 @@ export const wizardTower: Building = {
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
-    { th: 3, amount: 1 },
-    { th: 4, amount: 1 },
+    { th: 3, amount: 0 },
+    { th: 4, amount: 0 },
     { th: 5, amount: 1 },
     { th: 6, amount: 2 },
     { th: 7, amount: 2 },

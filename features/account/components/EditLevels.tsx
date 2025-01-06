@@ -5,7 +5,7 @@ import { allBuildings } from '@/data/structures';
 import { cn } from '@/utils/cn';
 import { AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
 
 const EXCLUDED_BUILDINGS = [
@@ -23,9 +23,10 @@ const EXCLUDED_BUILDINGS = [
 
 export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
   const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>([]);
+  const [buildings, setBuildings] = useState<BuildingWithTownHallAmount[]>([]);
 
-  const buildings = useMemo(() => {
-    return allBuildings
+  const initializeBuildings = useCallback(() => {
+    const filteredBuildings = allBuildings
       .filter(({ name, amount_per_town_hall }) => {
         const buildingLevel = amount_per_town_hall.find((th) => th.th === townHallLevel);
         return buildingLevel?.amount && !EXCLUDED_BUILDINGS.includes(name);
@@ -36,38 +37,89 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
         prev_number_available: building.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0,
         levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
       }));
+
+    setBuildings(filteredBuildings);
+    initializeBuildingLevels(filteredBuildings);
   }, [townHallLevel]);
 
-  useEffect(() => {
-    const newBuildingLevels = buildings.map(({ name, prev_number_available, number_available }) => ({
+  const initializeBuildingLevels = (buildings: BuildingWithTownHallAmount[]) => {
+    const levels = buildings.map(({ name, prev_number_available, number_available }) => ({
       name,
       buildings: Array.from({ length: number_available }, (_, i) => ({
         index: i + 1,
         level: i < prev_number_available ? 1 : 0,
       })),
     }));
+    setBuildingLevels(levels);
+  };
 
-    setBuildingLevels(newBuildingLevels);
+  useEffect(() => {
+    initializeBuildings();
+  }, [initializeBuildings]);
+
+  const handleMergedBuildings = useCallback((buildingName: string, currentLevel: number, newLevel: number) => {
+    const specialBuildings = {
+      'Multi-Archer Tower': 'Archer Tower',
+      'Ricochet Cannon': 'Cannon',
+    } as const;
+
+    const linkedBuilding = specialBuildings[buildingName as keyof typeof specialBuildings];
+    if (!linkedBuilding) return;
+
+    if (newLevel > 0 && currentLevel === 0) updateBuildingAmount(linkedBuilding, 'remove');
+    else if (newLevel === 0 && currentLevel > 0) updateBuildingAmount(linkedBuilding, 'add');
   }, []);
 
-  const updateLevel = useCallback((buildingName: string, index: number, level: number) => {
-    setBuildingLevels((prev) =>
-      prev.map((building) =>
-        building.name === buildingName
-          ? {
-              ...building,
-              buildings: building.buildings.map((b) => (b.index === index ? { ...b, level } : b)),
-            }
-          : building
-      )
-    );
+  const updateBuildingAmount = useCallback((buildingName: string, action: 'add' | 'remove') => {
+    setBuildingLevels((prev) => {
+      const buildingIndex = prev.findIndex((b) => b.name === buildingName);
+      if (buildingIndex === -1) return prev;
+
+      const building = { ...prev[buildingIndex] };
+      const buildings = [...building.buildings];
+
+      if (action === 'add') {
+        const newBuildings = [
+          { index: buildings.length + 1, level: 1 },
+          { index: buildings.length + 2, level: 1 },
+        ];
+        building.buildings = [...buildings, ...newBuildings];
+      } else {
+        building.buildings = buildings.slice(0, -2);
+      }
+
+      return [...prev.slice(0, buildingIndex), building, ...prev.slice(buildingIndex + 1)];
+    });
   }, []);
+
+  const updateLevel = useCallback(
+    (buildingName: string, index: number, level: number, isNewBuilding: boolean) => {
+      setBuildingLevels((prev) => {
+        const updated = prev.map((building) => {
+          if (building.name !== buildingName) return building;
+
+          const currentLevel = building.buildings[index - 1].level;
+          if (isNewBuilding) {
+            handleMergedBuildings(buildingName, currentLevel, level);
+          }
+
+          return {
+            ...building,
+            buildings: building.buildings.map((b) => (b.index === index ? { ...b, level } : b)),
+          };
+        });
+        return updated;
+      });
+    },
+    [handleMergedBuildings]
+  );
 
   return (
     <div className="border bg-background-dark border-primary rounded-2.5xl flex-1 overflow-y-auto scrollbar-slim grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid divide-x divide-y divide-primary">
       {buildings.map((building) => {
         const buildingState = buildingLevels.find((b) => b.name === building.name);
         if (!buildingState) return null;
+
         return (
           <div key={building.name} className="p-3">
             {building.name}
@@ -76,7 +128,7 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
                 key={b.index}
                 building={building}
                 level={b.level}
-                updateBuildingLevel={(level) => updateLevel(building.name, b.index, level)}
+                updateBuildingLevel={(level) => updateLevel(building.name, b.index, level, index >= building.prev_number_available)}
                 isNewBuilding={index >= building.prev_number_available}
               />
             ))}
@@ -112,7 +164,7 @@ const Building = ({
           className={cn('object-contain border rounded-2.5xl p-2 aspect-square bg-background border-primary', level === 0 && 'opacity-50')}
         />
         <div className="flex items-center gap-2">
-          <span className="text-sm text-primary-darker">Level</span> {level} / <span className="text-sm">{building.levels.length}</span>
+          <span className="text-sm text-primary-darker">Level</span> {level} <span className="text-sm"> / {building.levels.length}</span>
         </div>
         <div className="flex justify-end flex-1">
           <button
@@ -163,7 +215,7 @@ const BuildingLevelSelect = ({
     >
       {isNewBuilding && (
         <button
-          onClick={() => updateBuildingLevel(0)}
+          onClick={() => handleLevelClick(0)}
           key={0}
           className={cn(
             'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
