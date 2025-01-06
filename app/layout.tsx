@@ -22,14 +22,10 @@ export default async function RootLayout({
   children: React.ReactNode;
   auth: React.ReactNode;
 }>) {
-  const session = await authentication.api.getSession({
-    headers: await headers(),
-  });
-
   return (
     <html lang="en">
       <body className={cn('antialiased flex flex-col h-dvh', inter.className)}>
-        <Header username={session?.user.name} />
+        <Header />
         {children}
         {auth}
       </body>
