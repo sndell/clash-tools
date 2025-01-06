@@ -1,140 +1,14 @@
 'use client';
 
 import { Modal } from '@/components/ui/Modal';
-import { allBuildings } from '@/data/structures';
 import { cn } from '@/utils/cn';
 import { AnimatePresence } from 'motion/react';
 import Image from 'next/image';
-import { useCallback, useEffect } from 'react';
 import { useState } from 'react';
-
-const EXCLUDED_BUILDINGS = [
-  'Inferno Artillery',
-  'Giga Tesla',
-  'Barracks',
-  'Dark Barracks',
-  'Spell Factory',
-  'Dark Spell Factory',
-  'Workshop',
-  'Pet House',
-  'Wall',
-  'Town Hall',
-];
+import { useBuildings } from './hooks/useBuildings';
 
 export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
-  const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>([]);
-  const [buildings, setBuildings] = useState<BuildingWithTownHallAmount[]>([]);
-
-  const initializeBuildings = useCallback(() => {
-    const filteredBuildings = allBuildings
-      .filter(({ name, amount_per_town_hall }) => {
-        const buildingLevel = amount_per_town_hall.find((th) => th.th === townHallLevel);
-        return buildingLevel?.amount && !EXCLUDED_BUILDINGS.includes(name);
-      })
-      .map((building) => {
-        let prev_number_available = building.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
-
-        const mergedBuildingName =
-          building.name === 'Cannon' ? 'Ricochet Cannon' : building.name === 'Archer Tower' ? 'Multi-Archer Tower' : null;
-
-        if (mergedBuildingName) {
-          const mergedBuilding = allBuildings.find((b) => b.name === mergedBuildingName);
-          if (mergedBuilding) {
-            const prevMergedBuildingNumberAvailable =
-              mergedBuilding.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
-            prev_number_available -= prevMergedBuildingNumberAvailable * 2;
-          }
-        }
-
-        return {
-          ...building,
-          number_available: building.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0,
-          prev_number_available,
-          levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
-        };
-      });
-
-    setBuildings(filteredBuildings);
-    initializeBuildingLevels(filteredBuildings);
-  }, [townHallLevel]);
-
-  const initializeBuildingLevels = (buildings: BuildingWithTownHallAmount[]) => {
-    const levels = buildings.map(({ name, prev_number_available, number_available }) => ({
-      name,
-      buildings: Array.from({ length: number_available }, (_, i) => ({
-        index: i + 1,
-        level: i < prev_number_available ? 1 : 0,
-      })),
-    }));
-    setBuildingLevels(levels);
-  };
-
-  useEffect(() => {
-    initializeBuildings();
-  }, [initializeBuildings]);
-
-  const handleMergedBuildings = useCallback((buildingName: string, currentLevel: number, newLevel: number) => {
-    const specialBuildings = {
-      'Multi-Archer Tower': 'Archer Tower',
-      'Ricochet Cannon': 'Cannon',
-    } as const;
-
-    const linkedBuilding = specialBuildings[buildingName as keyof typeof specialBuildings];
-    if (!linkedBuilding) return;
-
-    if (newLevel > 0 && currentLevel === 0) updateBuildingAmount(linkedBuilding, 'remove');
-    else if (newLevel === 0 && currentLevel > 0) updateBuildingAmount(linkedBuilding, 'add');
-  }, []);
-
-  const updateBuildingAmount = useCallback((buildingName: string, action: 'add' | 'remove') => {
-    setBuildingLevels((prev) => {
-      const buildingIndex = prev.findIndex((b) => b.name === buildingName);
-      if (buildingIndex === -1) return prev;
-
-      const prevBuilding = prev[buildingIndex];
-      const newBuilding = { ...prevBuilding };
-      const buildings = [...newBuilding.buildings];
-
-      if (action === 'add') {
-        const newBuildings = [
-          { index: buildings.length + 1, level: 1 },
-          { index: buildings.length + 2, level: 1 },
-        ];
-        newBuilding.buildings = [...buildings.map((b) => ({ ...b, level: b.level === 0 ? 1 : b.level })), ...newBuildings];
-        if (buildings.some((b) => b.level === 0)) {
-          newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
-        }
-      } else {
-        newBuilding.buildings = buildings.slice(0, -2);
-        if (buildings.some((b) => b.level === 0)) {
-          newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
-        }
-      }
-
-      return prev.map((b, index) => (index === buildingIndex ? newBuilding : b));
-    });
-  }, []);
-
-  const updateLevel = useCallback(
-    (buildingName: string, index: number, level: number, isNewBuilding: boolean) => {
-      setBuildingLevels((prev) => {
-        return prev.map((building) => {
-          if (building.name !== buildingName) return building;
-
-          if (isNewBuilding) {
-            handleMergedBuildings(buildingName, building.buildings[index - 1]?.level, level);
-          }
-
-          return {
-            ...building,
-            buildings: building.buildings.map((b) => (b.index === index ? { ...b, level } : b)),
-          };
-        });
-      });
-    },
-    [handleMergedBuildings]
-  );
-
+  const { buildings, buildingLevels, updateLevel } = useBuildings(townHallLevel);
   return (
     <div className="border bg-background-dark border-primary rounded-2.5xl flex-1 overflow-y-auto scrollbar-slim grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid divide-x divide-y divide-primary">
       {buildings.map((building) => {
@@ -144,15 +18,19 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
         return (
           <div key={building.name} className="p-3">
             {building.name}
-            {buildingState.buildings.map((b, index) => (
-              <Building
-                key={b.index}
-                building={building}
-                level={b.level}
-                updateBuildingLevel={(level) => updateLevel(building.name, b.index, level, index >= building.prev_number_available)}
-                isNewBuilding={index >= building.prev_number_available}
-              />
-            ))}
+            {buildingState.buildings.map((b, index) => {
+              const newNumberAvaiable = building.number_available - building.prev_number_available;
+              const isNewBuilding = index >= buildingState.buildings.length - newNumberAvaiable;
+              return (
+                <Building
+                  key={b.index}
+                  building={building}
+                  level={b.level}
+                  updateBuildingLevel={(level) => updateLevel(building.name, b.index, level, index >= building.prev_number_available)}
+                  isNewBuilding={isNewBuilding}
+                />
+              );
+            })}
           </div>
         );
       })}
