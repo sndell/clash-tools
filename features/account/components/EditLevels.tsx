@@ -31,12 +31,30 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
         const buildingLevel = amount_per_town_hall.find((th) => th.th === townHallLevel);
         return buildingLevel?.amount && !EXCLUDED_BUILDINGS.includes(name);
       })
-      .map((building) => ({
-        ...building,
-        number_available: building.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0,
-        prev_number_available: building.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0,
-        levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
-      }));
+      .map((building) => {
+        let number_available = building.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0;
+        let prev_number_available = building.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
+
+        const mergedBuildingName =
+          building.name === 'Cannon' ? 'Ricochet Cannon' : building.name === 'Archer Tower' ? 'Multi-Archer Tower' : null;
+
+        if (mergedBuildingName) {
+          const mergedBuilding = allBuildings.find((b) => b.name === mergedBuildingName);
+          if (mergedBuilding) {
+            const prevMergedBuildingNumberAvailable =
+              mergedBuilding.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
+            number_available -= prevMergedBuildingNumberAvailable * 2;
+            prev_number_available -= prevMergedBuildingNumberAvailable * 2;
+          }
+        }
+
+        return {
+          ...building,
+          number_available,
+          prev_number_available,
+          levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
+        };
+      });
 
     setBuildings(filteredBuildings);
     initializeBuildingLevels(filteredBuildings);
@@ -66,13 +84,8 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
     const linkedBuilding = specialBuildings[buildingName as keyof typeof specialBuildings];
     if (!linkedBuilding) return;
 
-    Promise.resolve().then(() => {
-      if (newLevel > 0 && currentLevel === 0) {
-        updateBuildingAmount(linkedBuilding, 'remove');
-      } else if (newLevel === 0 && currentLevel > 0) {
-        updateBuildingAmount(linkedBuilding, 'add');
-      }
-    });
+    if (newLevel > 0 && currentLevel === 0) updateBuildingAmount(linkedBuilding, 'remove');
+    else if (newLevel === 0 && currentLevel > 0) updateBuildingAmount(linkedBuilding, 'add');
   }, []);
 
   const updateBuildingAmount = useCallback((buildingName: string, action: 'add' | 'remove') => {
@@ -89,9 +102,13 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
           { index: buildings.length + 1, level: 1 },
           { index: buildings.length + 2, level: 1 },
         ];
-        newBuilding.buildings = [...buildings, ...newBuildings];
+        const level0Buildings = buildings.filter((b) => b.level === 0);
+        newBuilding.buildings = [...buildings.map((b) => ({ ...b, level: b.level === 0 ? 1 : b.level })), ...newBuildings];
+        if (level0Buildings.length > 0) newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
       } else {
         newBuilding.buildings = buildings.slice(0, -2);
+        const level0Buildings = buildings.filter((b) => b.level === 0);
+        if (level0Buildings.length > 0) newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
       }
 
       const newState = [...prev];

@@ -18,7 +18,7 @@ export const cannon: Building = {
     { th: 14, amount: 7 },
     { th: 15, amount: 7 },
     { th: 16, amount: 7 },
-    { th: 17, amount: 3 },
+    { th: 17, amount: 7 },
   ],
   levels: [
     {
@@ -191,7 +191,7 @@ export const archerTower: Building = {
     { th: 14, amount: 8 },
     { th: 15, amount: 8 },
     { th: 16, amount: 8 },
-    { th: 17, amount: 5 },
+    { th: 17, amount: 9 },
   ],
   levels: [
     {
