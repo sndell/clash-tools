@@ -66,8 +66,13 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
     const linkedBuilding = specialBuildings[buildingName as keyof typeof specialBuildings];
     if (!linkedBuilding) return;
 
-    if (newLevel > 0 && currentLevel === 0) updateBuildingAmount(linkedBuilding, 'remove');
-    else if (newLevel === 0 && currentLevel > 0) updateBuildingAmount(linkedBuilding, 'add');
+    Promise.resolve().then(() => {
+      if (newLevel > 0 && currentLevel === 0) {
+        updateBuildingAmount(linkedBuilding, 'remove');
+      } else if (newLevel === 0 && currentLevel > 0) {
+        updateBuildingAmount(linkedBuilding, 'add');
+      }
+    });
   }, []);
 
   const updateBuildingAmount = useCallback((buildingName: string, action: 'add' | 'remove') => {
@@ -75,20 +80,23 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
       const buildingIndex = prev.findIndex((b) => b.name === buildingName);
       if (buildingIndex === -1) return prev;
 
-      const building = { ...prev[buildingIndex] };
-      const buildings = [...building.buildings];
+      const prevBuilding = prev[buildingIndex];
+      const newBuilding = { ...prevBuilding };
+      const buildings = [...newBuilding.buildings];
 
       if (action === 'add') {
         const newBuildings = [
           { index: buildings.length + 1, level: 1 },
           { index: buildings.length + 2, level: 1 },
         ];
-        building.buildings = [...buildings, ...newBuildings];
+        newBuilding.buildings = [...buildings, ...newBuildings];
       } else {
-        building.buildings = buildings.slice(0, -2);
+        newBuilding.buildings = buildings.slice(0, -2);
       }
 
-      return [...prev.slice(0, buildingIndex), building, ...prev.slice(buildingIndex + 1)];
+      const newState = [...prev];
+      newState[buildingIndex] = newBuilding;
+      return newState;
     });
   }, []);
 
