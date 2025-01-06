@@ -32,7 +32,6 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
         return buildingLevel?.amount && !EXCLUDED_BUILDINGS.includes(name);
       })
       .map((building) => {
-        let number_available = building.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0;
         let prev_number_available = building.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
 
         const mergedBuildingName =
@@ -43,14 +42,13 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
           if (mergedBuilding) {
             const prevMergedBuildingNumberAvailable =
               mergedBuilding.amount_per_town_hall.find((th) => th.th === townHallLevel - 1)?.amount || 0;
-            number_available -= prevMergedBuildingNumberAvailable * 2;
             prev_number_available -= prevMergedBuildingNumberAvailable * 2;
           }
         }
 
         return {
           ...building,
-          number_available,
+          number_available: building.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0,
           prev_number_available,
           levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
         };
@@ -102,30 +100,29 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
           { index: buildings.length + 1, level: 1 },
           { index: buildings.length + 2, level: 1 },
         ];
-        const level0Buildings = buildings.filter((b) => b.level === 0);
         newBuilding.buildings = [...buildings.map((b) => ({ ...b, level: b.level === 0 ? 1 : b.level })), ...newBuildings];
-        if (level0Buildings.length > 0) newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
+        if (buildings.some((b) => b.level === 0)) {
+          newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
+        }
       } else {
         newBuilding.buildings = buildings.slice(0, -2);
-        const level0Buildings = buildings.filter((b) => b.level === 0);
-        if (level0Buildings.length > 0) newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
+        if (buildings.some((b) => b.level === 0)) {
+          newBuilding.buildings[newBuilding.buildings.length - 1].level = 0;
+        }
       }
 
-      const newState = [...prev];
-      newState[buildingIndex] = newBuilding;
-      return newState;
+      return prev.map((b, index) => (index === buildingIndex ? newBuilding : b));
     });
   }, []);
 
   const updateLevel = useCallback(
     (buildingName: string, index: number, level: number, isNewBuilding: boolean) => {
       setBuildingLevels((prev) => {
-        const updated = prev.map((building) => {
+        return prev.map((building) => {
           if (building.name !== buildingName) return building;
 
-          const currentLevel = building.buildings[index - 1].level;
           if (isNewBuilding) {
-            handleMergedBuildings(buildingName, currentLevel, level);
+            handleMergedBuildings(buildingName, building.buildings[index - 1]?.level, level);
           }
 
           return {
@@ -133,7 +130,6 @@ export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
             buildings: building.buildings.map((b) => (b.index === index ? { ...b, level } : b)),
           };
         });
-        return updated;
       });
     },
     [handleMergedBuildings]
