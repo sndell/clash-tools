@@ -7,8 +7,16 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useBuildings } from '../hooks/useBuildings';
 
-export const EditBuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
-  const { buildings, buildingLevels, updateLevel } = useBuildings(townHallLevel);
+export const EditBuildingLevels = ({
+  townHallLevel,
+  initialBuildingLevels,
+  setInitialBuildingLevels,
+}: {
+  townHallLevel: number;
+  initialBuildingLevels: BuildingLevel;
+  setInitialBuildingLevels: (levels: BuildingLevel) => void;
+}) => {
+  const { buildings, buildingLevels, updateLevel } = useBuildings(townHallLevel, initialBuildingLevels, setInitialBuildingLevels);
   return (
     <div className="border bg-background-dark border-primary rounded-2.5xl flex-1 overflow-y-auto scrollbar-slim grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid divide-x divide-y divide-primary">
       {buildings.map((building) => {
@@ -126,7 +134,7 @@ const BuildingLevelSelect = ({
             alt="image"
             width={32}
             height={32}
-            className="object-contain aspect-square opacity-50"
+            className="object-contain opacity-50 aspect-square"
           />
           <div>Level 0</div>
         </button>

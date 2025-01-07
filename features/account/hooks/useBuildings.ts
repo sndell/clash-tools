@@ -22,8 +22,16 @@ const SPECIAL_BUILDINGS = {
   'Ricochet Cannon': 'Cannon',
 } as const;
 
-export const useBuildings = (townHallLevel: number) => {
-  const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>([]);
+export const useBuildings = (
+  townHallLevel: number,
+  initialBuildingLevels: BuildingLevel = [],
+  setInitialBuildingLevels: (levels: BuildingLevel) => void
+) => {
+  const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>(initialBuildingLevels);
+
+  useEffect(() => {
+    setInitialBuildingLevels(buildingLevels);
+  }, [buildingLevels, setInitialBuildingLevels]);
 
   const buildings = useMemo(() => {
     return allBuildings

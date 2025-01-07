@@ -1,51 +1,22 @@
 'use client';
-import { wall } from '@/data/structures';
+
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
+import { useWalls } from '../hooks/useWalls';
 
 export const EditWallLevels = ({
   townHallLevel,
   onWallStatusChange,
+  initialWallLevels,
+  setInitialWallLevels,
 }: {
   townHallLevel: number;
   onWallStatusChange: (isValid: boolean) => void;
+  initialWallLevels: WallLevels;
+  setInitialWallLevels: (levels: WallLevels) => void;
 }) => {
-  const wallAmount = useMemo(() => wall.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount ?? 0, [townHallLevel]);
-
-  const highestWall = useMemo(() => wall.levels.find((level) => level.town_hall === townHallLevel) ?? wall.levels[0], [townHallLevel]);
-
-  const [wallLevels, setWallLevels] = useState<WallLevels>([]);
-
-  const builtWallsAmount = useMemo(() => wallLevels.reduce((acc, wallLevel) => acc + wallLevel.amount, 0), [wallLevels]);
-
-  const getWallImageByLevel = useCallback((level: number): string => {
-    return `/images/wall/Wall${level}.webp`;
-  }, []);
-
-  useEffect(() => {
-    const availableWallLevels = wall.levels
-      .filter((level) => level.town_hall <= townHallLevel)
-      .map((level) => ({
-        level: level.level,
-        amount: 0,
-      }));
-    setWallLevels(availableWallLevels);
-  }, [townHallLevel]);
-
-  const handleWallLevelChange = useCallback(
-    (level: number, newAmount: number) => {
-      setWallLevels((prev) =>
-        prev.map((wallLevel) =>
-          wallLevel.level === level ? { ...wallLevel, amount: Math.min(Math.max(0, newAmount), wallAmount) } : wallLevel
-        )
-      );
-    },
-    [wallAmount]
-  );
-
-  useEffect(() => {
-    onWallStatusChange(wallAmount === builtWallsAmount);
-  }, [builtWallsAmount, wallAmount, onWallStatusChange]);
+  const { wallLevels, handleWallLevelChange, getWallImageByLevel, highestWall, builtWallsAmount, wallAmount } =
+    useWalls(townHallLevel, onWallStatusChange, initialWallLevels, setInitialWallLevels);
 
   return (
     <div className="mx-auto max-w-96 w-full flex flex-1 flex-col overflow-y-hidden rounded-2.5xl border border-primary">
@@ -110,7 +81,13 @@ const WallItem = ({
   return (
     <div className="flex items-center justify-between gap-2 px-2 py-1">
       <div className="flex items-center gap-2">
-        <Image src={imagePath} alt={`Wall Level ${level}`} width={40} height={40} className="object-contain aspect-square" />
+        <Image
+          src={imagePath}
+          alt={`Wall Level ${level}`}
+          width={40}
+          height={40}
+          className="object-contain aspect-square"
+        />
         <span>Level {level}</span>
       </div>
       <div className="flex items-center gap-2">

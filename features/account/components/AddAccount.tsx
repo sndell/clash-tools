@@ -10,30 +10,50 @@ import { townHall } from '@/data/structures';
 import { EditBuildingLevels } from './EditBuildingLevels';
 import { EditWallLevels } from './EditWallLevels';
 
+const getHeaderTitle = (mode: 'building' | 'wall' | 'account') => {
+  return mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account';
+};
+
+const getHeaderDescription = (mode: 'building' | 'wall' | 'account') => {
+  return mode === 'building'
+    ? 'Set the building levels of the account'
+    : mode === 'wall'
+    ? 'Set the wall levels of the account'
+    : 'Enter the village tag of the account you want to add';
+};
+
 export const AddAccount = () => {
-  const [player, setPlayer] = useState<FormattedPlayer | null>(null);
   const [mode, setMode] = useState<'building' | 'wall' | 'account'>('account');
   const [isFirstTimeLoading, setIsFirstTimeLoading] = useState(true);
   const [isWallsValid, setIsWallsValid] = useState(true);
+  const [player, setPlayer] = useState<FormattedPlayer | null>(null);
+  const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>([]);
+  const [wallLevels, setWallLevels] = useState<WallLevels>([]);
+
   const clearPlayer = () => setPlayer(null);
+
+  const addAccount = async () => {
+    console.log(buildingLevels, wallLevels);
+    console.log(player);
+  };
 
   return (
     <div className="max-w-7xl w-full mx-auto px-3 rounded-2.5xl flex-1 mb-3 overflow-y-hidden flex flex-col">
       <div className="bg-primary border border-primary rounded-2.5xl p-3 flex-1 flex flex-col  overflow-y-hidden">
-        <HeaderText
-          title={mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account'}
-          description={
-            mode === 'building'
-              ? 'Set the building levels of the account'
-              : mode === 'wall'
-              ? 'Set the wall levels of the account'
-              : 'Enter the village tag of the account you want to add'
-          }
-        />
+        <HeaderText title={getHeaderTitle(mode)} description={getHeaderDescription(mode)} />
         {mode === 'building' && player ? (
-          <EditBuildingLevels townHallLevel={player.townHallLevel} />
+          <EditBuildingLevels
+            townHallLevel={player.townHallLevel}
+            initialBuildingLevels={buildingLevels}
+            setInitialBuildingLevels={setBuildingLevels}
+          />
         ) : mode === 'wall' && player ? (
-          <EditWallLevels townHallLevel={player.townHallLevel} onWallStatusChange={setIsWallsValid} />
+          <EditWallLevels
+            townHallLevel={player.townHallLevel}
+            onWallStatusChange={setIsWallsValid}
+            initialWallLevels={wallLevels}
+            setInitialWallLevels={setWallLevels}
+          />
         ) : player ? (
           <AccountInfo
             player={player}
@@ -44,7 +64,12 @@ export const AddAccount = () => {
         ) : (
           <AccountForm setPlayer={setPlayer} />
         )}
-        <Footer isButtonDisabled={!player || (mode === 'wall' && !isWallsValid)} setMode={setMode} mode={mode} />
+        <Footer
+          isButtonDisabled={!player || (mode === 'wall' && !isWallsValid)}
+          setMode={setMode}
+          mode={mode}
+          addAccount={addAccount}
+        />
       </div>
     </div>
   );
@@ -63,10 +88,12 @@ const Footer = ({
   isButtonDisabled,
   setMode,
   mode,
+  addAccount,
 }: {
   isButtonDisabled: boolean;
   setMode: (value: 'building' | 'wall' | 'account') => void;
   mode: 'building' | 'wall' | 'account';
+  addAccount: () => void;
 }) => {
   return (
     <div className="flex items-end w-full gap-2 pt-3 mx-auto max-w-96">
@@ -95,7 +122,7 @@ const Footer = ({
             <span className="icon-[solar--arrow-left-linear] max-sm:text-xl" />
           </button>
           <button
-            onClick={() => setMode('wall')}
+            onClick={addAccount}
             disabled={isButtonDisabled}
             className="px-4 py-2 flex-1 border rounded-full bg-accent border-accent grid place-content-center max-sm:py-2.5 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-accent-light transition-colors"
           >
@@ -215,7 +242,11 @@ const LoadingStat = ({ interval, label }: { interval: number; label: string }) =
 
   return (
     <div className="flex items-center gap-3">
-      {isLoading ? <span className="icon-[svg-spinners--90-ring-with-bg]" /> : <span className="icon-[solar--check-circle-bold]" />}
+      {isLoading ? (
+        <span className="icon-[svg-spinners--90-ring-with-bg]" />
+      ) : (
+        <span className="icon-[solar--check-circle-bold]" />
+      )}
       <span>{label}</span>
     </div>
   );
