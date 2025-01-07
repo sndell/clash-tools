@@ -5,9 +5,9 @@ import { cn } from '@/utils/cn';
 import { AnimatePresence } from 'motion/react';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useBuildings } from './hooks/useBuildings';
+import { useBuildings } from '../hooks/useBuildings';
 
-export const EditLevels = ({ townHallLevel }: { townHallLevel: number }) => {
+export const EditBuildingLevels = ({ townHallLevel }: { townHallLevel: number }) => {
   const { buildings, buildingLevels, updateLevel } = useBuildings(townHallLevel);
   return (
     <div className="border bg-background-dark border-primary rounded-2.5xl flex-1 overflow-y-auto scrollbar-slim grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 grid divide-x divide-y divide-primary">

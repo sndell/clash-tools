@@ -7,23 +7,32 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
 import { verifyAccount } from '../actions';
 import { townHall } from '@/data/structures';
-import { EditLevels } from './EditLevels';
+import { EditBuildingLevels } from './EditBuildingLevels';
+import { EditWallLevels } from './EditWallLevels';
 
 export const AddAccount = () => {
   const [player, setPlayer] = useState<FormattedPlayer | null>(null);
-  const [isSettingLevels, setIsSettingLevels] = useState(false);
+  const [mode, setMode] = useState<'building' | 'wall' | 'account'>('account');
   const [isFirstTimeLoading, setIsFirstTimeLoading] = useState(true);
   const clearPlayer = () => setPlayer(null);
 
   return (
     <div className="max-w-7xl w-full mx-auto px-3 rounded-2.5xl flex-1 mb-3 overflow-y-hidden flex flex-col">
-      <div className="bg-primary border border-primary rounded-2.5xl p-3 flex-1 flex flex-col gap-3 overflow-y-hidden">
+      <div className="bg-primary border border-primary rounded-2.5xl p-3 flex-1 flex flex-col  overflow-y-hidden">
         <HeaderText
-          title={isSettingLevels ? 'Set building levels' : 'Add Clash Account'}
-          description={isSettingLevels ? 'Set the building levels of the account' : 'Enter the village tag of the account you want to add'}
+          title={mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account'}
+          description={
+            mode === 'building'
+              ? 'Set the building levels of the account'
+              : mode === 'wall'
+              ? 'Set the wall levels of the account'
+              : 'Enter the village tag of the account you want to add'
+          }
         />
-        {isSettingLevels && player ? (
-          <EditLevels townHallLevel={player.townHallLevel} />
+        {mode === 'building' && player ? (
+          <EditBuildingLevels townHallLevel={player.townHallLevel} />
+        ) : mode === 'wall' && player ? (
+          <EditWallLevels townHallLevel={player.townHallLevel} />
         ) : player ? (
           <AccountInfo
             player={player}
@@ -34,7 +43,7 @@ export const AddAccount = () => {
         ) : (
           <AccountForm setPlayer={setPlayer} />
         )}
-        <Footer isButtonDisabled={!player} setIsSettingLevels={setIsSettingLevels} isSettingLevels={isSettingLevels} />
+        <Footer isButtonDisabled={!player} setMode={setMode} mode={mode} />
       </div>
     </div>
   );
@@ -51,34 +60,50 @@ const HeaderText = ({ title, description }: { title: string; description: string
 
 const Footer = ({
   isButtonDisabled,
-  setIsSettingLevels,
-  isSettingLevels,
+  setMode,
+  mode,
 }: {
   isButtonDisabled: boolean;
-  setIsSettingLevels: (value: boolean) => void;
-  isSettingLevels: boolean;
+  setMode: (value: 'building' | 'wall' | 'account') => void;
+  mode: 'building' | 'wall' | 'account';
 }) => {
   return (
-    <div className="flex items-end w-full gap-2 mx-auto max-w-96">
-      {isSettingLevels ? (
+    <div className="flex items-end w-full gap-2 mx-auto max-w-96 pt-3">
+      {mode === 'building' ? (
         <>
           <button
-            onClick={() => setIsSettingLevels(false)}
+            onClick={() => setMode('account')}
             className="grid p-3 transition-colors border rounded-full place-content-center bg-background border-primary hover:bg-primary-light"
           >
             <span className="icon-[solar--arrow-left-linear] max-sm:text-xl" />
           </button>
           <button
-            onClick={() => setIsSettingLevels(true)}
+            onClick={() => setMode('wall')}
             disabled={isButtonDisabled}
             className="px-4 py-2 flex-1 border rounded-full bg-accent border-accent grid place-content-center max-sm:py-2.5 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-accent-light transition-colors"
           >
-            Add account
+            Set wall levels
+          </button>
+        </>
+      ) : mode === 'wall' ? (
+        <>
+          <button
+            onClick={() => setMode('building')}
+            className="grid p-3 transition-colors border rounded-full place-content-center bg-background border-primary hover:bg-primary-light"
+          >
+            <span className="icon-[solar--arrow-left-linear] max-sm:text-xl" />
+          </button>
+          <button
+            onClick={() => setMode('wall')}
+            disabled={isButtonDisabled}
+            className="px-4 py-2 flex-1 border rounded-full bg-accent border-accent grid place-content-center max-sm:py-2.5 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-accent-light transition-colors"
+          >
+            Finish account setup
           </button>
         </>
       ) : (
         <button
-          onClick={() => setIsSettingLevels(true)}
+          onClick={() => setMode('building')}
           disabled={isButtonDisabled}
           className="w-full px-4 py-2 border rounded-full bg-accent border-accent grid place-content-center max-sm:py-2.5 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-accent-light transition-colors"
         >

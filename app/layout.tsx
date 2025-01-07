@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { cn } from '@/utils/cn';
 import { Header } from '@/components/ui/Header';
-import { Suspense } from 'react';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -23,15 +22,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={cn('antialiased flex flex-col h-dvh', inter.className)}>
         <Header />
-        <Suspense
-          fallback={
-            <div className="grid flex-1 place-content-center absolute h-[calc(100vh-100px)] inset-0">
-              <span className="icon-[svg-spinners--ring-resize] text-3xl" />
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
+        {children}
       </body>
     </html>
   );
