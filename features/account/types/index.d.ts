@@ -157,7 +157,7 @@ type BuildingWithAmount = Building & {
   prev_number_available: number;
 };
 
-type WallLevel = {
+type WallLevels = {
   level: number;
   amount: number;
 }[];

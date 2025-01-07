@@ -1,65 +1,132 @@
 'use client';
 import { wall } from '@/data/structures';
 import Image from 'next/image';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export const EditWallLevels = ({ townHallLevel }: { townHallLevel: number }) => {
-  const wallAmount = useMemo(() => wall.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount || 0, [townHallLevel]);
-  const highestWall = useMemo(() => wall.levels.find((level) => level.town_hall === townHallLevel) || wall.levels[0], [townHallLevel]);
-  const [wallLevels, setWallLevels] = useState<WallLevel>([]);
+export const EditWallLevels = ({
+  townHallLevel,
+  onWallStatusChange,
+}: {
+  townHallLevel: number;
+  onWallStatusChange: (isValid: boolean) => void;
+}) => {
+  const wallAmount = useMemo(() => wall.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount ?? 0, [townHallLevel]);
 
-  const getWallImageByLevel = (level: number) => {
-    return `/images${wall.levels.find((wallLevel) => wallLevel.level === level)?.image_name || ''}`;
-  };
+  const highestWall = useMemo(() => wall.levels.find((level) => level.town_hall === townHallLevel) ?? wall.levels[0], [townHallLevel]);
+
+  const [wallLevels, setWallLevels] = useState<WallLevels>([]);
+
+  const builtWallsAmount = useMemo(() => wallLevels.reduce((acc, wallLevel) => acc + wallLevel.amount, 0), [wallLevels]);
+
+  const getWallImageByLevel = useCallback((level: number): string => {
+    return `/images/wall/Wall${level}.webp`;
+  }, []);
 
   useEffect(() => {
-    const wallLevels = wall.levels
+    const availableWallLevels = wall.levels
       .filter((level) => level.town_hall <= townHallLevel)
       .map((level) => ({
         level: level.level,
         amount: 0,
       }));
-    setWallLevels(wallLevels);
+    setWallLevels(availableWallLevels);
   }, [townHallLevel]);
 
-  const handleWallLevelChange = (level: number, amount: string) => {
-    setWallLevels((prev) => prev.map((wallLevel) => (wallLevel.level === level ? { ...wallLevel, amount: parseInt(amount) } : wallLevel)));
-  };
+  const handleWallLevelChange = useCallback(
+    (level: number, newAmount: number) => {
+      setWallLevels((prev) =>
+        prev.map((wallLevel) =>
+          wallLevel.level === level ? { ...wallLevel, amount: Math.min(Math.max(0, newAmount), wallAmount) } : wallLevel
+        )
+      );
+    },
+    [wallAmount]
+  );
+
+  useEffect(() => {
+    onWallStatusChange(wallAmount === builtWallsAmount);
+  }, [builtWallsAmount, wallAmount, onWallStatusChange]);
 
   return (
     <div className="mx-auto max-w-96 w-full flex flex-1 flex-col overflow-y-hidden rounded-2.5xl border border-primary">
       <div className="bg-background-dark rounded-2.5xl h-full flex items-center flex-col">
-        <div className="border-b border-primary w-full p-3 flex flex-col gap-1 items-center">
-          <div className="text-sm text-primary-dark">Walls available</div>
+        <header className="flex flex-col items-center w-full gap-1 p-3 border-b border-primary">
+          <h2 className="text-sm text-primary-dark">Walls built</h2>
           <div className="flex items-center gap-2 text-xl">
-            <Image src={getWallImageByLevel(highestWall.level)} alt="Wall" width={16} height={16} />
-            {wallAmount}
+            <Image
+              src={getWallImageByLevel(highestWall.level)}
+              alt={`Level ${highestWall.level} Wall`}
+              width={16}
+              height={16}
+              className="object-contain aspect-square"
+            />
+            <span aria-label={`${builtWallsAmount} out of ${wallAmount} walls built`}>
+              {builtWallsAmount} / {wallAmount}
+            </span>
           </div>
-        </div>
-        <div className="flex-1 overflow-y-auto h-full w-full scrollbar-slim py-2">
+        </header>
+
+        <div className="flex-1 w-full h-full py-2 overflow-y-auto scrollbar-slim">
           {wallLevels.map((wallLevel) => (
-            <div key={wallLevel.level} className="flex items-center gap-2 py-1 px-2 justify-between">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={getWallImageByLevel(wallLevel.level)}
-                  alt="Wall"
-                  width={40}
-                  height={40}
-                  className="aspect-square object-contain"
-                />
-                <span>Level {wallLevel.level}</span>
-              </div>
-              <input
-                type="number"
-                value={wallLevel.amount}
-                onChange={(e) => handleWallLevelChange(wallLevel.level, e.target.value)}
-                min={0}
-                max={wallAmount}
-                className="w-16 bg-primary appearance-none rounded-full overflow-hidden outline-none text-center py-1 border border-primary"
-              />
-            </div>
+            <WallItem
+              key={wallLevel.level}
+              level={wallLevel.level}
+              amount={wallLevel.amount}
+              maxAmount={wallAmount}
+              onWallLevelChange={handleWallLevelChange}
+              imagePath={getWallImageByLevel(wallLevel.level)}
+            />
           ))}
         </div>
+      </div>
+    </div>
+  );
+};
+
+const WallItem = ({
+  level,
+  amount,
+  maxAmount,
+  onWallLevelChange,
+  imagePath,
+}: {
+  level: number;
+  amount: number;
+  maxAmount: number;
+  onWallLevelChange: (level: number, amount: number) => void;
+  imagePath: string;
+}) => {
+  const [placeholderText, setPlaceholderText] = useState<'0' | ''>('0');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.trim();
+    const parsedAmount = value === '' ? 0 : parseInt(value, 10);
+
+    if (!isNaN(parsedAmount)) {
+      onWallLevelChange(level, parsedAmount);
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-2 px-2 py-1">
+      <div className="flex items-center gap-2">
+        <Image src={imagePath} alt={`Wall Level ${level}`} width={40} height={40} className="object-contain aspect-square" />
+        <span>Level {level}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <input
+          type="number"
+          value={amount === 0 ? '' : amount}
+          onChange={handleChange}
+          onFocus={() => setPlaceholderText('')}
+          onBlur={() => setPlaceholderText('0')}
+          min={0}
+          max={maxAmount}
+          step={1}
+          placeholder={placeholderText}
+          aria-label={`Wall level ${level} amount`}
+          className="w-16 py-1 overflow-hidden text-center border rounded-full outline-none appearance-none text-primary placeholder:text-primary bg-primary border-primary"
+        />
       </div>
     </div>
   );

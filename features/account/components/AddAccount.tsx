@@ -14,6 +14,7 @@ export const AddAccount = () => {
   const [player, setPlayer] = useState<FormattedPlayer | null>(null);
   const [mode, setMode] = useState<'building' | 'wall' | 'account'>('account');
   const [isFirstTimeLoading, setIsFirstTimeLoading] = useState(true);
+  const [isWallsValid, setIsWallsValid] = useState(true);
   const clearPlayer = () => setPlayer(null);
 
   return (
@@ -32,7 +33,7 @@ export const AddAccount = () => {
         {mode === 'building' && player ? (
           <EditBuildingLevels townHallLevel={player.townHallLevel} />
         ) : mode === 'wall' && player ? (
-          <EditWallLevels townHallLevel={player.townHallLevel} />
+          <EditWallLevels townHallLevel={player.townHallLevel} onWallStatusChange={setIsWallsValid} />
         ) : player ? (
           <AccountInfo
             player={player}
@@ -43,7 +44,7 @@ export const AddAccount = () => {
         ) : (
           <AccountForm setPlayer={setPlayer} />
         )}
-        <Footer isButtonDisabled={!player} setMode={setMode} mode={mode} />
+        <Footer isButtonDisabled={!player || (mode === 'wall' && !isWallsValid)} setMode={setMode} mode={mode} />
       </div>
     </div>
   );
@@ -68,7 +69,7 @@ const Footer = ({
   mode: 'building' | 'wall' | 'account';
 }) => {
   return (
-    <div className="flex items-end w-full gap-2 mx-auto max-w-96 pt-3">
+    <div className="flex items-end w-full gap-2 pt-3 mx-auto max-w-96">
       {mode === 'building' ? (
         <>
           <button
