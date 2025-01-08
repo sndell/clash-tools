@@ -15,7 +15,7 @@ export const useWalls = (
     () => wall.levels.find((level) => level.town_hall === townHallLevel) ?? wall.levels[0],
     [townHallLevel]
   );
-  const [wallLevels, setWallLevels] = useState<WallState[]>(initialWallLevels);
+  const [wallLevels, setWallLevels] = useState<WallState[]>([]);
   const builtWallsAmount = useMemo(() => wallLevels.reduce((acc, wallLevel) => acc + wallLevel.amount, 0), [wallLevels]);
 
   const getWallImageByLevel = useCallback((level: number): string => {
@@ -29,10 +29,13 @@ export const useWalls = (
   useEffect(() => {
     const availableWallLevels = wall.levels
       .filter((level) => level.town_hall <= townHallLevel)
-      .map((level) => ({
-        level: level.level,
-        amount: 0,
-      }));
+      .map((level) => {
+        const wall = initialWallLevels.find((wall) => wall.level === level.level);
+        return {
+          level: level.level,
+          amount: wall ? wall.amount : 0,
+        };
+      });
     setWallLevels(availableWallLevels);
   }, [townHallLevel]);
 

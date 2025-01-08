@@ -30,7 +30,11 @@ export const AddAccount = () => {
   const [buildingLevels, setBuildingLevels] = useState<BuildingState[]>([]);
   const [wallLevels, setWallLevels] = useState<WallState[]>([]);
 
-  const clearPlayer = () => setPlayer(null);
+  const clearPlayer = () => {
+    setPlayer(null);
+    setBuildingLevels([]);
+    setWallLevels([]);
+  };
 
   const addAccount = async () => {
     console.log(player, buildingLevels, wallLevels);

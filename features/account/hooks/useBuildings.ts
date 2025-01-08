@@ -48,14 +48,22 @@ const adjustPreviousAmountForSpecialBuildings = (building: Building, prevAmount:
   return prevAmount;
 };
 
-const createInitialBuildingLevels = (buildings: BuildingWithAmount[]): BuildingState[] => {
-  return buildings.map(({ name, prev_number_available, number_available }) => ({
-    name,
-    buildings: Array.from({ length: number_available }, (_, i) => ({
-      index: i + 1,
-      level: i < prev_number_available ? 1 : 0,
-    })),
-  }));
+const createInitialBuildingLevels = (
+  buildings: BuildingWithAmount[],
+  initialBuildingLevels: BuildingState[]
+): BuildingState[] => {
+  return buildings.map(({ name, prev_number_available, number_available }) => {
+    const building = initialBuildingLevels.find((b) => b.name === name);
+    if (building) return building;
+
+    return {
+      name,
+      buildings: Array.from({ length: number_available }, (_, i) => ({
+        index: i + 1,
+        level: i < prev_number_available ? 1 : 0,
+      })),
+    };
+  });
 };
 
 const handleSpecialBuildingConversion = (
@@ -125,7 +133,7 @@ export const useBuildings = (
   initialBuildingLevels: BuildingState[] = [],
   setInitialBuildingLevels: (levels: BuildingState[]) => void
 ) => {
-  const [buildingLevels, setBuildingLevels] = useState<BuildingState[]>(initialBuildingLevels);
+  const [buildingLevels, setBuildingLevels] = useState<BuildingState[]>([]);
 
   // Sync building levels with parent state
   useEffect(() => {
@@ -155,7 +163,7 @@ export const useBuildings = (
 
   // Initialize building levels when buildings change
   useEffect(() => {
-    const levels = createInitialBuildingLevels(buildings);
+    const levels = createInitialBuildingLevels(buildings, initialBuildingLevels);
     setBuildingLevels(levels);
   }, [buildings]);
 
