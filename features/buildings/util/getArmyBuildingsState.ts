@@ -31,14 +31,14 @@ const getUnlockedItems = (playerItems: (Troop | Spell)[], itemList: ArmyItem[], 
     })
     .filter(Boolean) as { troop: Troop | Spell; troopData: ArmyItem }[];
 
-export const getArmyBuildingsState = (player: FormattedPlayer): BuildingState[] => {
+export const getArmyBuildingsState = (troops: Troop[], spells: Spell[]): BuildingState[] => {
   const unlockedItems = {
-    elixirTroops: getUnlockedItems(player.troops, elixirTroops),
-    darkTroops: getUnlockedItems(player.troops, darkTroops),
-    elixirSpells: getUnlockedItems(player.spells ?? [], elixirSpells),
-    darkSpells: getUnlockedItems(player.spells ?? [], darkSpells),
-    siegeMachines: getUnlockedItems(player.troops, siegeMachines),
-    pets: getUnlockedItems(player.troops, pets),
+    elixirTroops: getUnlockedItems(troops, elixirTroops),
+    darkTroops: getUnlockedItems(troops, darkTroops),
+    elixirSpells: getUnlockedItems(spells ?? [], elixirSpells),
+    darkSpells: getUnlockedItems(spells ?? [], darkSpells),
+    siegeMachines: getUnlockedItems(troops, siegeMachines),
+    pets: getUnlockedItems(troops, pets),
   };
 
   return Object.entries(TROOP_CATEGORIES)

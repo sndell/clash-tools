@@ -5,9 +5,10 @@ import { useForm } from 'react-hook-form';
 import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
-import { verifyAccount } from '../actions';
 import { EditBuildingLevels, EditWallLevels, getArmyBuildingsState, getTownHallState } from '@/features/buildings';
 import { townHall } from '@/data/structures';
+import { verifyAccount } from '../actions/verifyAccount';
+import { createClashAccount } from '../actions/createClashAccount';
 
 const getHeaderTitle = (mode: 'building' | 'wall' | 'account') => {
   return mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account';
@@ -37,9 +38,26 @@ export const AddAccount = () => {
 
   const addAccount = async () => {
     if (!player || !buildingLevels.length || !wallLevels.length) return;
+    const { spells, heroes, heroEquipment, troops } = player;
     const townHallState = getTownHallState(player.townHallLevel, player.townHallWeaponLevel);
-    const armyBuildingsState = getArmyBuildingsState(player);
-    console.log(townHallState, armyBuildingsState);
+    const armyBuildingsState = getArmyBuildingsState(troops, spells);
+    const playerInfo = {
+      tag: player.tag,
+      name: player.name,
+      townHallLevel: player.townHallLevel,
+      townHallWeaponLevel: player.townHallWeaponLevel,
+    };
+    const result = await createClashAccount(
+      playerInfo,
+      buildingLevels,
+      [...townHallState, ...armyBuildingsState],
+      wallLevels,
+      troops,
+      spells,
+      heroes,
+      heroEquipment
+    );
+    if (result.error) console.log(result.error);
   };
 
   return (
@@ -159,9 +177,11 @@ const AccountForm = ({ setPlayer }: { setPlayer: (player: FormattedPlayer) => vo
   const onSubmit = async (data: AddFormValues) => {
     setIsLoading(true);
     const result = await verifyAccount(data.tag);
-    if (result.data) {
-      setPlayer(result.data);
-    } else setError('tag', { message: 'Player not found' });
+
+    if (result.data) setPlayer(result.data);
+    else if (result.error === 'Account already exists') setError('tag', { message: 'Account with tag already added' });
+    else setError('tag', { message: 'Player not found' });
+
     setIsLoading(false);
   };
 

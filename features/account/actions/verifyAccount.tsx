@@ -1,5 +1,9 @@
 'use server';
 
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
+
 export async function verifyAccount(
   tag: string
   // token: string
@@ -27,9 +31,16 @@ export async function verifyAccount(
   };
 
   try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) return { error: 'Unauthorized' };
+    const userId = session.user.id;
+
     const formattedTag = tag.replace(/^#/, '%23');
-    // const verifyUrl = `${API_BASE_URL}/${formattedTag}/verifytoken`;
     const playerUrl = `${API_BASE_URL}/${formattedTag}`;
+    // const verifyUrl = `${API_BASE_URL}/${formattedTag}/verifytoken`;
 
     // const verifyResponse = await fetchPlayerData(verifyUrl, {
     //   method: 'POST',
@@ -40,6 +51,15 @@ export async function verifyAccount(
     // if (verifyResponse.status !== 'ok') return { error: 'Invalid tag or token' };
 
     const playerData: Player = await fetchPlayerData(playerUrl, { headers: AUTH_HEADER });
+
+    const doesAccountExist = await prisma.clashAccount.findFirst({
+      where: {
+        userId,
+        tag: playerData.tag,
+      },
+    });
+
+    if (doesAccountExist) return { error: 'Account already exists' };
     return { data: getFormattedPlayer(playerData) };
   } catch (error: unknown) {
     return { error: (error as Error).message || 'Failed to verify account' };

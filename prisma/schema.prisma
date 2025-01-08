@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
   emailVerified Boolean
@@ -17,6 +17,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  ClashAccount  ClashAccount[]
 
   @@unique([email])
   @@map("user")
@@ -65,4 +66,25 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model ClashAccount {
+  id                  String   @id @default(cuid())
+  tag                 String
+  name                String
+  townHallLevel       Int
+  townHallWeaponLevel Int?
+  buildings           Json
+  caluclatedBuildings Json
+  walls               Json
+  troops              Json
+  spells              Json
+  heroes              Json
+  equipment           Json
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@map("clash_account")
 }
