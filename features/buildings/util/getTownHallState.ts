@@ -40,7 +40,7 @@ const createWeaponLevel = (townHallLevel: number, weaponLevel: number): Building
   };
 };
 
-export const getTownHall = (townHallLevel: number, townhallWeaponLevel?: number): BuildingState[] => {
+export const getTownHallState = (townHallLevel: number, townhallWeaponLevel?: number): BuildingState[] => {
   const townHallBuildingLevel = townHall.levels.find((level) => level.level === townHallLevel);
 
   if (!townHallBuildingLevel) {

@@ -5453,15 +5453,4 @@ export const siegeMachines = [wallWrecker, battleBlimp, stoneSlammer, logLaunche
 
 export const heroes = [barbarianKing, archerQueen, minionPrince, grandWarden, royalChampion];
 
-export const pets = [
-  lassi,
-  electroOwl,
-  mightyYak,
-  unicorn,
-  frosty,
-  diggy,
-  poisonLizard,
-  phoenix,
-  spiritFox,
-  angryJelly,
-];
+export const pets = [lassi, electroOwl, mightyYak, unicorn, frosty, diggy, poisonLizard, phoenix, spiritFox, angryJelly];

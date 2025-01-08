@@ -6,8 +6,7 @@ import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
 import { verifyAccount } from '../actions';
-import { EditBuildingLevels } from './EditBuildingLevels';
-import { EditWallLevels } from './EditWallLevels';
+import { EditBuildingLevels, EditWallLevels, getArmyBuildingsState, getTownHallState } from '@/features/buildings';
 import { townHall } from '@/data/structures';
 
 const getHeaderTitle = (mode: 'building' | 'wall' | 'account') => {
@@ -37,8 +36,10 @@ export const AddAccount = () => {
   };
 
   const addAccount = async () => {
-    console.log(player, buildingLevels, wallLevels);
     if (!player || !buildingLevels.length || !wallLevels.length) return;
+    const townHallState = getTownHallState(player.townHallLevel, player.townHallWeaponLevel);
+    const armyBuildingsState = getArmyBuildingsState(player);
+    console.log(townHallState, armyBuildingsState);
   };
 
   return (

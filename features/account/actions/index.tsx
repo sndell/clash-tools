@@ -11,7 +11,7 @@ export async function verifyAccount(
     name: player.name,
     tag: player.tag,
     townHallLevel: player.townHallLevel,
-    townhallWeaponLevel: player.townHallWeaponLevel,
+    townHallWeaponLevel: player.townHallWeaponLevel,
     heroes: player.heroes.filter((hero) => hero.village === 'home'),
     heroEquipment: player.heroEquipment,
     troops: player.troops.filter((troop) => troop.village === 'home'),

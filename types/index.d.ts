@@ -36,3 +36,21 @@ type ArmyItem = {
     upgrade_building_level_required: number;
   }[];
 };
+
+type OreCost = {
+  shiny: number;
+  glowy: number;
+  starry: number;
+};
+
+type LevelCostMap = Map<number, OreCost>;
+
+type EquipmentCostType = {
+  common: LevelCostMap;
+  epic: LevelCostMap;
+};
+
+type Equipment = {
+  name: string;
+  type: 'common' | 'epic';
+};

@@ -31,7 +31,7 @@ const getUnlockedItems = (playerItems: (Troop | Spell)[], itemList: ArmyItem[], 
     })
     .filter(Boolean) as { troop: Troop | Spell; troopData: ArmyItem }[];
 
-export const getArmyBuildings = (player: FormattedPlayer): BuildingState[] => {
+export const getArmyBuildingsState = (player: FormattedPlayer): BuildingState[] => {
   const unlockedItems = {
     elixirTroops: getUnlockedItems(player.troops, elixirTroops),
     darkTroops: getUnlockedItems(player.troops, darkTroops),
