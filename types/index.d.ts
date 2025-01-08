@@ -5,6 +5,26 @@ type Building = {
     th: number;
     amount: number;
   }[];
+  levels: BuildingLevel[];
+};
+
+type BuildingLevel = {
+  level: number;
+  cost: {
+    gold?: number;
+    elixir?: number;
+    dark?: number;
+  };
+  build_time: number; // sec
+  town_hall: number;
+  supercharge?: boolean;
+  image_name: string;
+};
+
+type ArmyItem = {
+  category: 'troop' | 'pet' | 'spell' | 'siege_machine' | 'hero';
+  unlock_building_level_required: number;
+  name: string;
   levels: {
     level: number;
     cost: {
@@ -12,9 +32,7 @@ type Building = {
       elixir?: number;
       dark?: number;
     };
-    build_time: number; // sec
-    town_hall: number;
-    supercharge?: boolean;
-    image_name: string;
+    upgrade_time: number; // sec
+    upgrade_building_level_required: number;
   }[];
 };

@@ -1856,9 +1856,9 @@ export const ricochetCannon: Building = {
   ],
 };
 
-export const gigaTesla: Building = {
+export const townHall12Weapon: Building = {
   category: 'defence',
-  name: 'Giga Tesla',
+  name: 'TH12 Weapon',
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1917,9 +1917,9 @@ export const gigaTesla: Building = {
   ],
 };
 
-export const gigaInferno13: Building = {
+export const townHall13Weapon: Building = {
   category: 'defence',
-  name: 'Giga Inferno',
+  name: 'TH13 Weapon',
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1933,7 +1933,7 @@ export const gigaInferno13: Building = {
     { th: 10, amount: 0 },
     { th: 11, amount: 0 },
     { th: 12, amount: 0 },
-    { th: 13, amount: 5 },
+    { th: 13, amount: 1 },
     { th: 14, amount: 0 },
     { th: 15, amount: 0 },
     { th: 16, amount: 0 },
@@ -1978,9 +1978,9 @@ export const gigaInferno13: Building = {
   ],
 };
 
-export const gigaInferno14: Building = {
+export const townHall14Weapon: Building = {
   category: 'defence',
-  name: 'Giga Inferno',
+  name: 'TH14 Weapon',
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1995,7 +1995,7 @@ export const gigaInferno14: Building = {
     { th: 11, amount: 0 },
     { th: 12, amount: 0 },
     { th: 13, amount: 0 },
-    { th: 14, amount: 5 },
+    { th: 14, amount: 1 },
     { th: 15, amount: 0 },
     { th: 16, amount: 0 },
     { th: 17, amount: 0 },
@@ -2039,9 +2039,9 @@ export const gigaInferno14: Building = {
   ],
 };
 
-export const gigaInferno15: Building = {
+export const townHall15Weapon: Building = {
   category: 'defence',
-  name: 'Giga Inferno',
+  name: 'TH15 Weapon',
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2057,7 +2057,7 @@ export const gigaInferno15: Building = {
     { th: 12, amount: 0 },
     { th: 13, amount: 0 },
     { th: 14, amount: 0 },
-    { th: 15, amount: 5 },
+    { th: 15, amount: 1 },
     { th: 16, amount: 0 },
     { th: 17, amount: 0 },
   ],
@@ -2100,9 +2100,9 @@ export const gigaInferno15: Building = {
   ],
 };
 
-export const infernoArtillery: Building = {
+export const townHall17Weapon: Building = {
   category: 'defence',
-  name: 'Inferno Artillery',
+  name: 'TH17 Weapon',
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2120,7 +2120,7 @@ export const infernoArtillery: Building = {
     { th: 14, amount: 0 },
     { th: 15, amount: 0 },
     { th: 16, amount: 0 },
-    { th: 17, amount: 5 },
+    { th: 17, amount: 1 },
   ],
   levels: [
     {
@@ -4840,10 +4840,10 @@ export const allBuildings: Building[] = [
   xBow,
   infernoTower,
   airSweeper,
+  eagleArtillery,
   bombTower,
   scattershot,
   spellTower,
-  eagleArtillery,
   monolith,
   firespitter,
   buildersHut,
@@ -4864,11 +4864,11 @@ export const allBuildings: Building[] = [
   skeletonTrap,
   tornadoTrap,
   gigaBomb,
-  gigaTesla,
-  gigaInferno13,
-  gigaInferno14,
-  gigaInferno15,
-  infernoArtillery,
+  townHall12Weapon,
+  townHall13Weapon,
+  townHall14Weapon,
+  townHall15Weapon,
+  townHall17Weapon,
   clanCastle,
   barracks,
   darkBarracks,

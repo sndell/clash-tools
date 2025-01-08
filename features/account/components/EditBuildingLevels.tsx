@@ -13,8 +13,8 @@ export const EditBuildingLevels = ({
   setInitialBuildingLevels,
 }: {
   townHallLevel: number;
-  initialBuildingLevels: BuildingLevel;
-  setInitialBuildingLevels: (levels: BuildingLevel) => void;
+  initialBuildingLevels: BuildingState[];
+  setInitialBuildingLevels: (levels: BuildingState[]) => void;
 }) => {
   const { buildings, buildingLevels, updateLevel } = useBuildings(townHallLevel, initialBuildingLevels, setInitialBuildingLevels);
   return (
@@ -34,7 +34,9 @@ export const EditBuildingLevels = ({
                   key={b.index}
                   building={building}
                   level={b.level}
-                  updateBuildingLevel={(level) => updateLevel(building.name, b.index, level, index >= building.prev_number_available)}
+                  updateBuildingLevel={(level) =>
+                    updateLevel(building.name, b.index, level, index >= building.prev_number_available)
+                  }
                   isNewBuilding={isNewBuilding}
                 />
               );
@@ -68,10 +70,14 @@ const Building = ({
           alt={building.name}
           width={64}
           height={64}
-          className={cn('object-contain border rounded-2.5xl p-2 aspect-square bg-background border-primary', level === 0 && 'opacity-50')}
+          className={cn(
+            'object-contain border rounded-2.5xl p-2 aspect-square bg-background border-primary',
+            level === 0 && 'opacity-50'
+          )}
         />
         <div className="flex items-center gap-2">
-          <span className="text-sm text-primary-darker">Level</span> {level} <span className="text-sm"> / {building.levels.length}</span>
+          <span className="text-sm text-primary-darker">Level</span> {level}{' '}
+          <span className="text-sm"> / {building.levels.length}</span>
         </div>
         <div className="flex justify-end flex-1">
           <button

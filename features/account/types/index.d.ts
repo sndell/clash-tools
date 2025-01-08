@@ -1,20 +1,20 @@
 type IconUrls = {
   small: string;
-  tiny?: string;
-  large?: string;
   medium: string;
+  large?: string;
+  tiny?: string;
 };
 
 type Label = {
-  name: string;
   id: number;
+  name: string;
   iconUrls: IconUrls;
 };
 
-type Badge = {
+type BadgeUrls = {
   small: string;
-  large: string;
   medium: string;
+  large: string;
 };
 
 type League = {
@@ -32,7 +32,7 @@ type Clan = {
   tag: string;
   name: string;
   clanLevel: number;
-  badgeUrls: Badge;
+  badgeUrls: BadgeUrls;
 };
 
 type Season = {
@@ -70,13 +70,6 @@ type PlayerHouse = {
   elements: PlayerHouseElement[];
 };
 
-type Equipment = {
-  name: string;
-  level: number;
-  maxLevel: number;
-  village: 'home';
-};
-
 type Troop = {
   name: string;
   level: number;
@@ -85,12 +78,19 @@ type Troop = {
   superTroopIsActive?: boolean;
 };
 
+type HeroEquipment = {
+  name: string;
+  level: number;
+  maxLevel: number;
+  village: 'home';
+};
+
 type Hero = {
   name: string;
   level: number;
   maxLevel: number;
-  equipment?: Equipment[];
   village: 'home' | 'builderBase';
+  equipment?: HeroEquipment[];
 };
 
 type Spell = {
@@ -129,35 +129,30 @@ type Player = {
   troops: Troop[];
   heroes: Hero[];
   spells: Spell[];
-  heroEquipment: Equipment[];
+  heroEquipment: HeroEquipment[];
 };
 
-type FormattedPlayer = {
-  name: string;
-  tag: string;
-  townHallLevel: number;
-  heroes: Hero[];
-  heroEquipment: Equipment[];
-  troops: Troop[];
-  spells: Spell[];
-  expLevel: number;
-  league?: League;
+type FormattedPlayer = Pick<
+  Player,
+  'name' | 'tag' | 'townHallLevel' | 'expLevel' | 'league' | 'heroes' | 'heroEquipment' | 'troops' | 'spells'
+> & {
+  townHallWeaponLevel?: number;
 };
 
-type BuildingLevel = {
+type BuildingState = {
   name: string;
   buildings: {
     index: number;
     level: number;
   }[];
-}[];
+};
 
 type BuildingWithAmount = Building & {
   number_available: number;
   prev_number_available: number;
 };
 
-type WallLevels = {
+type WallState = {
   level: number;
   amount: number;
-}[];
+};

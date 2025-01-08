@@ -6,9 +6,9 @@ import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
 import { verifyAccount } from '../actions';
-import { townHall } from '@/data/structures';
 import { EditBuildingLevels } from './EditBuildingLevels';
 import { EditWallLevels } from './EditWallLevels';
+import { townHall } from '@/data/structures';
 
 const getHeaderTitle = (mode: 'building' | 'wall' | 'account') => {
   return mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account';
@@ -27,14 +27,14 @@ export const AddAccount = () => {
   const [isFirstTimeLoading, setIsFirstTimeLoading] = useState(true);
   const [isWallsValid, setIsWallsValid] = useState(true);
   const [player, setPlayer] = useState<FormattedPlayer | null>(null);
-  const [buildingLevels, setBuildingLevels] = useState<BuildingLevel>([]);
-  const [wallLevels, setWallLevels] = useState<WallLevels>([]);
+  const [buildingLevels, setBuildingLevels] = useState<BuildingState[]>([]);
+  const [wallLevels, setWallLevels] = useState<WallState[]>([]);
 
   const clearPlayer = () => setPlayer(null);
 
   const addAccount = async () => {
-    console.log(buildingLevels, wallLevels);
-    console.log(player);
+    console.log(player, buildingLevels, wallLevels);
+    if (!player || !buildingLevels.length || !wallLevels.length) return;
   };
 
   return (

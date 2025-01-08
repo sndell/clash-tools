@@ -7,12 +7,15 @@ import { useMemo } from 'react';
 export const useWalls = (
   townHallLevel: number,
   onWallStatusChange: (isValid: boolean) => void,
-  initialWallLevels: WallLevels = [],
-  setInitialWallLevels: (levels: WallLevels) => void
+  initialWallLevels: WallState[] = [],
+  setInitialWallLevels: (levels: WallState[]) => void
 ) => {
   const wallAmount = useMemo(() => wall.amount_per_town_hall.find((th) => th.th === townHallLevel)?.amount ?? 0, [townHallLevel]);
-  const highestWall = useMemo(() => wall.levels.find((level) => level.town_hall === townHallLevel) ?? wall.levels[0], [townHallLevel]);
-  const [wallLevels, setWallLevels] = useState<WallLevels>(initialWallLevels);
+  const highestWall = useMemo(
+    () => wall.levels.find((level) => level.town_hall === townHallLevel) ?? wall.levels[0],
+    [townHallLevel]
+  );
+  const [wallLevels, setWallLevels] = useState<WallState[]>(initialWallLevels);
   const builtWallsAmount = useMemo(() => wallLevels.reduce((acc, wallLevel) => acc + wallLevel.amount, 0), [wallLevels]);
 
   const getWallImageByLevel = useCallback((level: number): string => {

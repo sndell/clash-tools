@@ -12,11 +12,15 @@ export const EditWallLevels = ({
 }: {
   townHallLevel: number;
   onWallStatusChange: (isValid: boolean) => void;
-  initialWallLevels: WallLevels;
-  setInitialWallLevels: (levels: WallLevels) => void;
+  initialWallLevels: WallState[];
+  setInitialWallLevels: (levels: WallState[]) => void;
 }) => {
-  const { wallLevels, handleWallLevelChange, getWallImageByLevel, highestWall, builtWallsAmount, wallAmount } =
-    useWalls(townHallLevel, onWallStatusChange, initialWallLevels, setInitialWallLevels);
+  const { wallLevels, handleWallLevelChange, getWallImageByLevel, highestWall, builtWallsAmount, wallAmount } = useWalls(
+    townHallLevel,
+    onWallStatusChange,
+    initialWallLevels,
+    setInitialWallLevels
+  );
 
   return (
     <div className="mx-auto max-w-96 w-full flex flex-1 flex-col overflow-y-hidden rounded-2.5xl border border-primary">
@@ -81,13 +85,7 @@ const WallItem = ({
   return (
     <div className="flex items-center justify-between gap-2 px-2 py-1">
       <div className="flex items-center gap-2">
-        <Image
-          src={imagePath}
-          alt={`Wall Level ${level}`}
-          width={40}
-          height={40}
-          className="object-contain aspect-square"
-        />
+        <Image src={imagePath} alt={`Wall Level ${level}`} width={40} height={40} className="object-contain aspect-square" />
         <span>Level {level}</span>
       </div>
       <div className="flex items-center gap-2">
