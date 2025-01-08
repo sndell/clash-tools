@@ -6,9 +6,9 @@ import { AddFormSchema, AddFormValues } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@/components/form/Input';
 import { EditBuildingLevels, EditWallLevels, getArmyBuildingsState, getTownHallState } from '@/features/buildings';
-import { townHall } from '@/data/structures';
 import { verifyAccount } from '../actions/verifyAccount';
 import { createClashAccount } from '../actions/createClashAccount';
+import { getTownHallImage } from '@/features/buildings/util/getTownHallImage';
 
 const getHeaderTitle = (mode: 'building' | 'wall' | 'account') => {
   return mode === 'building' ? 'Set building levels' : mode === 'wall' ? 'Set wall levels' : 'Add Clash Account';
@@ -238,11 +238,6 @@ const AccountInfo = ({
 };
 
 const PlayerCard = ({ player }: { player: FormattedPlayer }) => {
-  const getTownHallImage = (level: number) => {
-    const townHallLevel = townHall.levels.find((th) => th.level === level);
-    return `images${townHallLevel?.image_name}`;
-  };
-
   return (
     <div className="flex items-center gap-3 p-3 border-b border-primary">
       {/* eslint-disable-next-line @next/next/no-img-element */}

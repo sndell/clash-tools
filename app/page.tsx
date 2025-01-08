@@ -1,5 +1,7 @@
 import { AccountCheck } from '@/features/account';
+import { Tracking } from '@/features/tracking';
 import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 
 export default async function HomePage() {
@@ -11,9 +13,19 @@ export default async function HomePage() {
     return <div className="grid flex-1 place-content-center">You are not logged in</div>;
   }
 
-  return (
-    <div className="grid flex-1 place-content-center">
-      <AccountCheck />
-    </div>
-  );
+  const account = await prisma.clashAccount.findFirst({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  if (!account) {
+    return (
+      <div className="grid flex-1 place-content-center">
+        <AccountCheck />
+      </div>
+    );
+  }
+
+  return <Tracking account={account} />;
 }
