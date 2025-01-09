@@ -3,6 +3,7 @@
 import { ClashAccountsButton } from '@/features/account';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type Props = {
   username: string;
@@ -15,10 +16,13 @@ type Props = {
 
 export const UserControls = ({ username, accounts }: Props) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   const logout = async () => {
+    setIsLoading(true);
     await authClient.signOut();
     router.refresh();
+    setIsLoading(false);
   };
 
   return (
@@ -31,9 +35,9 @@ export const UserControls = ({ username, accounts }: Props) => {
         <div className="pl-4 pr-3 truncate text-text-primary-dark max-w-40">{username}</div>
         <button
           onClick={logout}
-          className="h-full px-3 transition-colors border rounded-full bg-accent border-accent hover:bg-accent-light"
+          className="grid w-20 h-full px-3 transition-colors border rounded-full place-content-center bg-accent border-accent hover:bg-accent-light"
         >
-          Logout
+          {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Logout'}
         </button>
       </div>
     </>

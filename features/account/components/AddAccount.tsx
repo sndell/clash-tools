@@ -116,8 +116,15 @@ const Footer = ({
   isButtonDisabled: boolean;
   setMode: (value: 'building' | 'wall' | 'account') => void;
   mode: 'building' | 'wall' | 'account';
-  addAccount: () => void;
+  addAccount: () => Promise<void>;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleAddAccount = async () => {
+    setIsLoading(true);
+    await addAccount();
+    setIsLoading(false);
+  };
+
   return (
     <div className="flex items-end w-full gap-2 pt-3 mx-auto max-w-96">
       {mode === 'building' ? (
@@ -145,11 +152,11 @@ const Footer = ({
             <span className="icon-[solar--arrow-left-linear] max-sm:text-xl" />
           </button>
           <button
-            onClick={addAccount}
+            onClick={handleAddAccount}
             disabled={isButtonDisabled}
             className="px-4 py-2 flex-1 border rounded-full bg-accent border-accent grid place-content-center max-sm:py-2.5 disabled:opacity-50 disabled:cursor-not-allowed enabled:hover:bg-accent-light transition-colors"
           >
-            Finish account setup
+            {isLoading ? <span className="icon-[svg-spinners--3-dots-scale] text-2xl" /> : 'Finish account setup'}
           </button>
         </>
       ) : (
