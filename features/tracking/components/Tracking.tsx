@@ -1,4 +1,4 @@
-'use clinet';
+'use client';
 
 import { getTownHallImage } from '@/features/buildings';
 import type { ClashAccount } from '@prisma/client';

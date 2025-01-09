@@ -4788,7 +4788,7 @@ export const townHall: Building = {
       cost: { gold: 6000000 },
       build_time: 388800,
       town_hall: 11,
-      image_name: '/town-hall/Town_Hall12.webp ',
+      image_name: '/town-hall/Town_Hall12.webp',
     },
     {
       level: 13,

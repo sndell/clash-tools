@@ -56,7 +56,9 @@ const NavLink = ({
     key={item.href}
     href={item.href}
     onClick={onClick}
-    className={`flex justify-center ${isActive ? 'text-primary' : 'hover:text-primary text-primary-dark transition-colors'} ${className}`}
+    className={`flex justify-center ${
+      isActive ? 'text-primary' : 'hover:text-primary text-primary-dark transition-colors'
+    } ${className}`}
   >
     {item.label}
     {isActive && (

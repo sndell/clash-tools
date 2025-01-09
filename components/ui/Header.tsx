@@ -4,6 +4,8 @@ import { Navbar } from './Navbar';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { Suspense } from 'react';
+import { prisma } from '@/lib/prisma';
+import { Session } from '@/lib/auth-client';
 
 export const Header = async () => {
   return (
@@ -14,9 +16,9 @@ export const Header = async () => {
         <Suspense
           fallback={
             <div className="flex gap-2">
-              <div className="w-10 h-10 max-sm:w-12 max-sm:h-12 rounded-full bg-primary animate-pulse" />
-              <div className="w-10 h-10 max-sm:w-12 max-sm:h-12 rounded-full bg-primary animate-pulse" />
-              <div className="h-10 w-40 max-sm:h-12 rounded-full bg-primary animate-pulse" />
+              <div className="w-10 h-10 rounded-full max-sm:w-12 max-sm:h-12 bg-primary animate-pulse" />
+              <div className="w-10 h-10 rounded-full max-sm:w-12 max-sm:h-12 bg-primary animate-pulse" />
+              <div className="w-40 h-10 rounded-full max-sm:h-12 bg-primary animate-pulse" />
             </div>
           }
         >
@@ -32,6 +34,20 @@ const AuthWrapper = async () => {
     headers: await headers(),
   });
 
-  const username = session?.user.name;
-  return username ? <UserControls username={username} /> : <AuthButton />;
+  return session ? <UserControlsWrapper session={session} /> : <AuthButton />;
+};
+
+const UserControlsWrapper = async ({ session }: { session: Session }) => {
+  const accounts = await prisma.clashAccount.findMany({
+    where: {
+      userId: session.user.id,
+    },
+    select: {
+      name: true,
+      tag: true,
+      townHallLevel: true,
+    },
+  });
+
+  return <UserControls username={session.user.name} accounts={accounts} />;
 };
