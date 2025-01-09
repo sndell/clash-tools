@@ -4,6 +4,10 @@ type BuildingState = {
     index: number;
     level: number;
   }[];
+  superchargeBuildings?: {
+    index: number;
+    level: number;
+  }[];
 };
 
 type BuildingWithAmount = Building & {

@@ -52,7 +52,7 @@ const createInitialBuildingLevels = (
   buildings: BuildingWithAmount[],
   initialBuildingLevels: BuildingState[]
 ): BuildingState[] => {
-  return buildings.map(({ name, prev_number_available, number_available }) => {
+  return buildings.map(({ name, prev_number_available, number_available, superchargeLevels }) => {
     const building = initialBuildingLevels.find((b) => b.name === name);
     if (building) return building;
 
@@ -62,6 +62,12 @@ const createInitialBuildingLevels = (
         index: i + 1,
         level: i < prev_number_available ? 1 : 0,
       })),
+      superchargeBuildings:
+        superchargeLevels &&
+        Array.from({ length: number_available }, (_, i) => ({
+          index: i + 1,
+          level: 0,
+        })),
     };
   });
 };
@@ -135,7 +141,6 @@ export const useBuildings = (
 ) => {
   const [buildingLevels, setBuildingLevels] = useState<BuildingState[]>([]);
 
-  // Sync building levels with parent state
   useEffect(() => {
     setInitialBuildingLevels(buildingLevels);
   }, [buildingLevels, setInitialBuildingLevels]);
@@ -157,6 +162,7 @@ export const useBuildings = (
           number_available,
           prev_number_available,
           levels: building.levels.filter((level) => level.town_hall <= townHallLevel),
+          superchargeLevels: building.superchargeLevels?.filter((level) => level.town_hall <= townHallLevel),
         };
       });
   }, [townHallLevel]);
@@ -168,21 +174,30 @@ export const useBuildings = (
   }, [buildings]);
 
   // Update building levels
-  const updateLevel = useCallback((buildingName: string, index: number, newLevel: number, isNewBuilding: boolean) => {
-    setBuildingLevels((prevLevels) => {
-      const updatedLevels = [...prevLevels];
-      const buildingIndex = updatedLevels.findIndex((b) => b.name === buildingName);
+  const updateLevel = useCallback(
+    (buildingName: string, index: number, newLevel: number, isNewBuilding: boolean, maxLevel: number, supercharge?: boolean) => {
+      setBuildingLevels((prevLevels) => {
+        const updatedLevels = [...prevLevels];
+        const buildingIndex = updatedLevels.findIndex((b) => b.name === buildingName);
 
-      if (buildingIndex !== -1) {
-        updatedLevels[buildingIndex] = {
-          ...updatedLevels[buildingIndex],
-          buildings: updatedLevels[buildingIndex].buildings.map((b) => (b.index === index ? { ...b, level: newLevel } : b)),
-        };
-      }
+        if (buildingIndex !== -1) {
+          updatedLevels[buildingIndex] = {
+            ...updatedLevels[buildingIndex],
+            buildings: updatedLevels[buildingIndex].buildings.map((b) =>
+              b.index === index ? { ...b, level: supercharge ? maxLevel : newLevel } : b
+            ),
 
-      return isNewBuilding ? updateSpecialBuildings(updatedLevels, buildingName, index, newLevel, prevLevels) : updatedLevels;
-    });
-  }, []);
+            superchargeBuildings: updatedLevels[buildingIndex].superchargeBuildings?.map((b) =>
+              b.index === index ? { ...b, level: supercharge ? newLevel : 0 } : b
+            ),
+          };
+        }
+
+        return isNewBuilding ? updateSpecialBuildings(updatedLevels, buildingName, index, newLevel, prevLevels) : updatedLevels;
+      });
+    },
+    []
+  );
 
   return {
     buildings,

@@ -6,6 +6,7 @@ type Building = {
     amount: number;
   }[];
   levels: BuildingLevel[];
+  superchargeLevels?: SuperchargeLevel[];
 };
 
 type BuildingLevel = {
@@ -17,7 +18,18 @@ type BuildingLevel = {
   };
   build_time: number; // sec
   town_hall: number;
-  supercharge?: boolean;
+  image_name: string;
+};
+
+type SuperchargeLevel = {
+  level: number;
+  cost: {
+    gold?: number;
+    elixir?: number;
+    dark?: number;
+  };
+  build_time: number; // sec
+  town_hall: number;
   image_name: string;
 };
 

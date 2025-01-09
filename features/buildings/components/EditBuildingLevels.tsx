@@ -29,13 +29,23 @@ export const EditBuildingLevels = ({
             {buildingState.buildings.map((b, index) => {
               const newNumberAvaiable = building.number_available - building.prev_number_available;
               const isNewBuilding = index >= buildingState.buildings.length - newNumberAvaiable;
+              const superchargeLevel = buildingState.superchargeBuildings?.find((scb) => scb.index === b.index)?.level;
+
               return (
                 <Building
                   key={b.index}
                   building={building}
                   level={b.level}
-                  updateBuildingLevel={(level) =>
-                    updateLevel(building.name, b.index, level, index >= building.prev_number_available)
+                  superchargeLevel={superchargeLevel || 0}
+                  updateBuildingLevel={(level, supercharge) =>
+                    updateLevel(
+                      building.name,
+                      b.index,
+                      level,
+                      index >= building.prev_number_available,
+                      building.levels.length,
+                      supercharge
+                    )
                   }
                   isNewBuilding={isNewBuilding}
                 />
@@ -51,12 +61,14 @@ export const EditBuildingLevels = ({
 const Building = ({
   building,
   level,
+  superchargeLevel,
   updateBuildingLevel,
   isNewBuilding,
 }: {
   building: BuildingWithAmount;
   level: number;
-  updateBuildingLevel: (level: number) => void;
+  superchargeLevel: number;
+  updateBuildingLevel: (level: number, supercharge?: boolean) => void;
   isNewBuilding: boolean;
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -95,6 +107,7 @@ const Building = ({
             updateBuildingLevel={updateBuildingLevel}
             toggleModal={toggleIsModalOpen}
             selectedLevel={level}
+            selectedSuperchargeLevel={superchargeLevel || 0}
             building={building}
           />
         )}
@@ -108,16 +121,18 @@ const BuildingLevelSelect = ({
   updateBuildingLevel,
   toggleModal,
   selectedLevel,
+  selectedSuperchargeLevel,
   building,
 }: {
   isNewBuilding: boolean;
-  updateBuildingLevel: (level: number) => void;
+  updateBuildingLevel: (level: number, supercharge?: boolean) => void;
   toggleModal: () => void;
   selectedLevel: number;
+  selectedSuperchargeLevel: number;
   building: BuildingWithAmount;
 }) => {
-  const handleLevelClick = (level: number) => {
-    updateBuildingLevel(level);
+  const handleLevelClick = (level: number, supercharge?: boolean) => {
+    updateBuildingLevel(level, supercharge);
     toggleModal();
   };
 
@@ -132,7 +147,7 @@ const BuildingLevelSelect = ({
           key={0}
           className={cn(
             'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
-            selectedLevel === 0 && 'bg-primary-light'
+            selectedLevel === 0 && selectedSuperchargeLevel === 0 && 'bg-primary-light'
           )}
         >
           <Image
@@ -151,13 +166,44 @@ const BuildingLevelSelect = ({
           key={level.level}
           className={cn(
             'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
-            selectedLevel === level.level && 'bg-primary-light'
+            selectedLevel === level.level && selectedSuperchargeLevel === 0 && 'bg-primary-light'
           )}
         >
           <Image src={`/images${level.image_name}`} alt="image" width={32} height={32} className="object-contain aspect-square" />
           <div>Level {level.level}</div>
         </button>
       ))}
+      {building.superchargeLevels &&
+        building.superchargeLevels.map((level) => (
+          <button
+            onClick={() => handleLevelClick(level.level, true)}
+            key={level.level}
+            className={cn(
+              'flex items-center justify-center w-full gap-3 py-1 transition-colors hover:bg-primary-light',
+              selectedSuperchargeLevel === level.level && 'bg-primary-light'
+            )}
+          >
+            <Image
+              src={`/images${level.image_name}`}
+              alt="image"
+              width={32}
+              height={32}
+              className="object-contain aspect-square"
+            />
+            <div className="flex w-14">
+              {Array.from({ length: level.level }).map((_, index) => (
+                <Image
+                  src="/images/misc/supercharge_icon.webp"
+                  alt="supercharge"
+                  width={20}
+                  height={20}
+                  key={index}
+                  className="aspect-square object-contain"
+                />
+              ))}
+            </div>
+          </button>
+        ))}
     </Modal>
   );
 };

@@ -480,6 +480,22 @@ export const mortar: Building = {
       image_name: '/mortar/Mortar16.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 4100000 },
+      build_time: 216000,
+      town_hall: 16,
+      image_name: '/mortar/Mortar16.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 2500000 },
+      build_time: 302400,
+      town_hall: 16,
+      image_name: '/mortar/Mortar16.webp',
+    },
+  ],
 };
 export const airDefense: Building = {
   category: 'defence',
@@ -606,6 +622,22 @@ export const airDefense: Building = {
       level: 15,
       cost: { gold: 21000000 },
       build_time: 1317600,
+      town_hall: 17,
+      image_name: '/air-defence/Air_Defence15.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 10000000 },
+      build_time: 345600,
+      town_hall: 17,
+      image_name: '/air-defence/Air_Defence15.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 6000000 },
+      build_time: 518400,
       town_hall: 17,
       image_name: '/air-defence/Air_Defence15.webp',
     },
@@ -751,6 +783,22 @@ export const wizardTower: Building = {
       level: 17,
       cost: { gold: 20000000 },
       build_time: 1270800,
+      town_hall: 17,
+      image_name: '/wizard-tower/Wizard_Tower17.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 8000000 },
+      build_time: 302400,
+      town_hall: 17,
+      image_name: '/wizard-tower/Wizard_Tower17.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 4000000 },
+      build_time: 475200,
       town_hall: 17,
       image_name: '/wizard-tower/Wizard_Tower17.webp',
     },
@@ -961,6 +1009,22 @@ export const hiddenTesla: Building = {
       image_name: '/hidden-tesla/Hidden_Tesla15.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 6000000 },
+      build_time: 194400,
+      town_hall: 16,
+      image_name: '/hidden-tesla/Hidden_Tesla15.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 3000000 },
+      build_time: 324000,
+      town_hall: 2,
+      image_name: '/hidden-tesla/Hidden_Tesla15.webp',
+    },
+  ],
 };
 
 export const bombTower: Building = {
@@ -1071,6 +1135,22 @@ export const bombTower: Building = {
       image_name: '/bomb-tower/Bomb_Tower12.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 10000000 },
+      build_time: 345600,
+      town_hall: 17,
+      image_name: '/bomb-tower/Bomb_Tower12.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 6000000 },
+      build_time: 518400,
+      town_hall: 17,
+      image_name: '/bomb-tower/Bomb_Tower12.webp',
+    },
+  ],
 };
 
 export const xBow: Building = {
@@ -1174,6 +1254,22 @@ export const xBow: Building = {
       image_name: '/x-bow/X-Bow11.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 6000000 },
+      build_time: 216000,
+      town_hall: 16,
+      image_name: '/x-bow/X-Bow11.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 3200000 },
+      build_time: 345600,
+      town_hall: 16,
+      image_name: '/x-bow/X-Bow11.webp',
+    },
+  ],
 };
 
 export const infernoTower: Building = {
@@ -1266,6 +1362,22 @@ export const infernoTower: Building = {
       level: 10,
       cost: { gold: 16500000 },
       build_time: 950400,
+      town_hall: 16,
+      image_name: '/inferno-tower/Inferno_Tower10.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 11000000 },
+      build_time: 388800,
+      town_hall: 16,
+      image_name: '/inferno-tower/Inferno_Tower10.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 6500000 },
+      build_time: 561000,
       town_hall: 16,
       image_name: '/inferno-tower/Inferno_Tower10.webp',
     },
@@ -1406,6 +1518,22 @@ export const scattershot: Building = {
       image_name: '/scattershot/Scattershot5.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 6750000 },
+      build_time: 259200,
+      town_hall: 16,
+      image_name: '/scattershot/Scattershot5.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 3750000 },
+      build_time: 388800,
+      town_hall: 16,
+      image_name: '/scattershot/Scattershot5.webp',
+    },
+  ],
 };
 
 export const buildersHut: Building = {
@@ -1470,6 +1598,22 @@ export const buildersHut: Building = {
       level: 6,
       cost: { gold: 15500000 },
       build_time: 950400,
+      town_hall: 16,
+      image_name: '/builders-hut/Builders_Hut6.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 10000000 },
+      build_time: 345600,
+      town_hall: 15,
+      image_name: '/builders-hut/Builders_Hut6.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 5000000 },
+      build_time: 518400,
       town_hall: 16,
       image_name: '/builders-hut/Builders_Hut6.webp',
     },
@@ -1604,6 +1748,22 @@ export const firespitter: Building = {
       level: 2,
       cost: { gold: 23000000 },
       build_time: 1382400,
+      town_hall: 17,
+      image_name: '/firespitter/Firespitter2.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 12000000 },
+      build_time: 518400,
+      town_hall: 17,
+      image_name: '/firespitter/Firespitter2.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 10000000 },
+      build_time: 604800,
       town_hall: 17,
       image_name: '/firespitter/Firespitter2.webp',
     },
@@ -1807,6 +1967,22 @@ export const multiArcherTower: Building = {
       image_name: '/multi-archer-tower/Multi-Archer_Tower3.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 11500000 },
+      build_time: 475200,
+      town_hall: 17,
+      image_name: '/multi-archer-tower/Multi-Archer_Tower3.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 8000000 },
+      build_time: 561600,
+      town_hall: 17,
+      image_name: '/multi-archer-tower/Multi-Archer_Tower3.webp',
+    },
+  ],
 };
 
 export const ricochetCannon: Building = {
@@ -1850,6 +2026,22 @@ export const ricochetCannon: Building = {
       level: 3,
       cost: { gold: 23000000 },
       build_time: 1339200,
+      town_hall: 17,
+      image_name: '/ricochet-cannon/Ricochet_Cannon3.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 11500000 },
+      build_time: 475200,
+      town_hall: 17,
+      image_name: '/ricochet-cannon/Ricochet_Cannon3.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 8000000 },
+      build_time: 561600,
       town_hall: 17,
       image_name: '/ricochet-cannon/Ricochet_Cannon3.webp',
     },
@@ -2909,6 +3101,29 @@ export const goldMine: Building = {
       image_name: '/gold-mine/Gold_Mine16.webp',
     },
   ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { elixir: 1700000 },
+      build_time: 172800,
+      town_hall: 16,
+      image_name: '/gold-mine/Gold_Mine16.webp',
+    },
+    {
+      level: 2,
+      cost: { elixir: 1500000 },
+      build_time: 259200,
+      town_hall: 16,
+      image_name: '/gold-mine/Gold_Mine16.webp',
+    },
+    {
+      level: 3,
+      cost: { elixir: 1300000 },
+      build_time: 345600,
+      town_hall: 16,
+      image_name: '/gold-mine/Gold_Mine16.webp',
+    },
+  ],
 };
 
 export const elixirCollector: Building = {
@@ -3042,6 +3257,29 @@ export const elixirCollector: Building = {
       cost: { elixir: 2000000 },
       build_time: 138240,
       town_hall: 14,
+      image_name: '/elixir-collector/Elixir_Collector16.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { gold: 1700000 },
+      build_time: 172800,
+      town_hall: 16,
+      image_name: '/elixir-collector/Elixir_Collector16.webp',
+    },
+    {
+      level: 2,
+      cost: { gold: 1500000 },
+      build_time: 259200,
+      town_hall: 16,
+      image_name: '/elixir-collector/Elixir_Collector16.webp',
+    },
+    {
+      level: 3,
+      cost: { gold: 1300000 },
+      build_time: 345600,
+      town_hall: 16,
       image_name: '/elixir-collector/Elixir_Collector16.webp',
     },
   ],
@@ -3442,6 +3680,29 @@ export const darkElixirDrill: Building = {
       cost: { elixir: 6000000 },
       build_time: 691200,
       town_hall: 14,
+      image_name: '/dark-elixir-drill/Dark_Elixir_Drill10.webp',
+    },
+  ],
+  superchargeLevels: [
+    {
+      level: 1,
+      cost: { elixir: 5100000 },
+      build_time: 259200,
+      town_hall: 16,
+      image_name: '/dark-elixir-drill/Dark_Elixir_Drill10.webp',
+    },
+    {
+      level: 2,
+      cost: { elixir: 4500000 },
+      build_time: 345600,
+      town_hall: 16,
+      image_name: '/dark-elixir-drill/Dark_Elixir_Drill10.webp',
+    },
+    {
+      level: 3,
+      cost: { elixir: 3900000 },
+      build_time: 432000,
+      town_hall: 16,
       image_name: '/dark-elixir-drill/Dark_Elixir_Drill10.webp',
     },
   ],
@@ -4829,9 +5090,9 @@ export const townHall: Building = {
 };
 
 export const allBuildings: Building[] = [
+  clanCastle,
   multiArcherTower,
   ricochetCannon,
-  clanCastle,
   cannon,
   archerTower,
   wizardTower,
