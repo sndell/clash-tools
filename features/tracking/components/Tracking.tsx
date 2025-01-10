@@ -3,8 +3,9 @@
 import { getTownHallImage } from '@/features/buildings';
 import type { ClashAccount } from '@prisma/client';
 import Image from 'next/image';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { getWallProgression } from '../util/getWallProgression';
+import { getArmyProgression } from '../util/getArmyProgreesion';
 
 type Props = {
   account: ClashAccount;
@@ -13,9 +14,18 @@ type Props = {
 export const Tracking = ({ account }: Props) => {
   const [mode, setMode] = useState<'current' | 'max'>('current');
 
-  const { resources: wallResources, progression: wallProgression } = useMemo(() => {
+  const wall = useMemo(() => {
     return getWallProgression(JSON.parse(account.walls as string), account.townHallLevel);
   }, [account.walls, account.townHallLevel]);
+
+  const { lab, pets, heroes } = useMemo(() => {
+    return getArmyProgression(
+      JSON.parse(account.troops as string),
+      JSON.parse(account.spells as string),
+      JSON.parse(account.heroes as string),
+      account.townHallLevel
+    );
+  }, [account.troops, account.spells, account.heroes, account.townHallLevel]);
 
   return (
     <div className="w-full px-3 mx-auto max-w-7xl">
@@ -58,14 +68,14 @@ export const Tracking = ({ account }: Props) => {
               </div>
             </div>
             <div className="grid grid-cols-4 grid-rows-2 gap-2 p-3 max-md:grid-cols-2">
-              <TrackingCard title="Everything" percentage={50} />
-              <TrackingCard title="Walls" percentage={wallProgression} />
-              <TrackingCard title="Lab" percentage={5} />
-              <TrackingCard title="Heroes" percentage={89} />
-              <TrackingCard title="Buildings" percentage={7} />
-              <TrackingCard title="Pets" percentage={100} />
-              <TrackingCard title="Equipment" percentage={34} />
-              <TrackingCard title="Supercharge" percentage={58} />
+              <TrackingCard title="Everything" percentage={0} />
+              <TrackingCard title="Walls" percentage={wall.progression} />
+              <TrackingCard title="Lab" percentage={lab.progression} />
+              <TrackingCard title="Heroes" percentage={heroes.progression} />
+              <TrackingCard title="Buildings" percentage={0} />
+              <TrackingCard title="Pets" percentage={pets.progression} />
+              <TrackingCard title="Equipment" percentage={0} />
+              <TrackingCard title="Supercharge" percentage={0} />
             </div>
           </div>
         </div>

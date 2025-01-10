@@ -5451,6 +5451,8 @@ export const darkSpells = [poisonSpell, earthquakeSpell, hasteSpell, skeletonSpe
 
 export const siegeMachines = [wallWrecker, battleBlimp, stoneSlammer, logLauncher, flameFlinger, battleDrill];
 
+export const labItems = [...elixirTroops, ...darkTroops, ...elixirSpells, ...darkSpells, ...siegeMachines];
+
 export const heroes = [barbarianKing, archerQueen, minionPrince, grandWarden, royalChampion];
 
 export const pets = [lassi, electroOwl, mightyYak, unicorn, frosty, diggy, poisonLizard, phoenix, spiritFox, angryJelly];
