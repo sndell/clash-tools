@@ -3,13 +3,19 @@
 import { getTownHallImage } from '@/features/buildings';
 import type { ClashAccount } from '@prisma/client';
 import Image from 'next/image';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { getWallProgression } from '../util/getWallProgression';
 
 type Props = {
   account: ClashAccount;
 };
 
 export const Tracking = ({ account }: Props) => {
-  console.log(account);
+  const [mode, setMode] = useState<'current' | 'max'>('current');
+
+  const { resources: wallResources, progression: wallProgression } = useMemo(() => {
+    return getWallProgression(JSON.parse(account.walls as string), account.townHallLevel);
+  }, [account.walls, account.townHallLevel]);
 
   return (
     <div className="w-full px-3 mx-auto max-w-7xl">
@@ -53,13 +59,13 @@ export const Tracking = ({ account }: Props) => {
             </div>
             <div className="grid grid-cols-4 grid-rows-2 gap-2 p-3 max-md:grid-cols-2">
               <TrackingCard title="Everything" percentage={50} />
-              <TrackingCard title="Walls" percentage={50} />
-              <TrackingCard title="Lab" percentage={50} />
-              <TrackingCard title="Heroes" percentage={50} />
-              <TrackingCard title="Buildings" percentage={50} />
-              <TrackingCard title="Pets" percentage={50} />
-              <TrackingCard title="Equipment" percentage={50} />
-              <TrackingCard title="Supercharge" percentage={50} />
+              <TrackingCard title="Walls" percentage={wallProgression} />
+              <TrackingCard title="Lab" percentage={5} />
+              <TrackingCard title="Heroes" percentage={89} />
+              <TrackingCard title="Buildings" percentage={7} />
+              <TrackingCard title="Pets" percentage={100} />
+              <TrackingCard title="Equipment" percentage={34} />
+              <TrackingCard title="Supercharge" percentage={58} />
             </div>
           </div>
         </div>
@@ -70,9 +76,10 @@ export const Tracking = ({ account }: Props) => {
 
 const TrackingCard = ({ title, percentage }: { title: string; percentage: number }) => {
   return (
-    <div className="flex items-center justify-between border py-2.5 px-3.5 max-sm:py-3 max-sm:px-4 rounded-full text-sm bg-background-dark border-primary">
-      <div className="text-primary">{title}</div>
-      <div className="text-primary-dark">{percentage}%</div>
+    <div className="flex relative items-center justify-between overflow-hidden border py-2.5 px-3.5 max-sm:py-3 max-sm:px-4 rounded-full text-sm bg-background-dark border-primary">
+      <div className="z-10 text-primary">{title}</div>
+      <div className="z-10 text-primary-dark">{percentage.toFixed(0)}%</div>
+      <div className="absolute inset-0 bg-primary-light" style={{ width: `${percentage}%` }} />
     </div>
   );
 };

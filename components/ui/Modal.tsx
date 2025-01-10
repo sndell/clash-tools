@@ -14,7 +14,7 @@ export const Modal = ({ children, close, className }: Props) => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
       onMouseDown={close}
-      className="absolute inset-0 z-10 flex flex-col items-center justify-center p-3 overflow-y-scroll scrollbar-slim bg-black/50"
+      className="absolute inset-0 z-50 flex flex-col items-center justify-center p-3 overflow-y-scroll scrollbar-slim bg-black/50"
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}

@@ -15,6 +15,7 @@ type BuildingLevel = {
     gold?: number;
     elixir?: number;
     dark?: number;
+    mixed?: number;
   };
   build_time: number; // sec
   town_hall: number;
