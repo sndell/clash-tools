@@ -56,14 +56,12 @@ type OreCost = {
   starry: number;
 };
 
-type LevelCostMap = Map<number, OreCost>;
+type ResouceMap = Map<number, OreCost>;
 
-type EquipmentCostType = {
-  common: LevelCostMap;
-  epic: LevelCostMap;
-};
+type EquipmentLevel = { level: number; blacksmithLevelRequired: number };
 
 type Equipment = {
   name: string;
   type: 'common' | 'epic';
+  levels: EquipmentLevel[];
 };

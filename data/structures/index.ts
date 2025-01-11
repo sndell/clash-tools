@@ -1021,7 +1021,7 @@ export const hiddenTesla: Building = {
       level: 2,
       cost: { gold: 3000000 },
       build_time: 324000,
-      town_hall: 2,
+      town_hall: 16,
       image_name: '/hidden-tesla/Hidden_Tesla15.webp',
     },
   ],

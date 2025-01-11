@@ -82,8 +82,7 @@ export const getArmyProgression = (troops: Troop[], spells: Spell[], heroes: Her
   const formatProgress = (progress: typeof labProgression) => ({
     resources: progress.resources,
     time: progress.time,
-    progression:
-      progress.upgrades.total > 0 ? Math.round((progress.upgrades.completed / progress.upgrades.total) * 100 * 10) / 10 : 0,
+    upgrades: progress.upgrades,
   });
 
   return {

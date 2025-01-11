@@ -28,7 +28,5 @@ export const getWallProgression = (walls: WallState[], townHallLevel: number) =>
 
     return { ...acc, resources: newResources, wallAmount: totalWalls, upgrades: newUpgrades };
   }, initial);
-
-  const progression = (upgrades.completed / upgrades.total) * 100;
-  return { resources, progression };
+  return { resources, upgrades };
 };

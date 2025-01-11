@@ -2326,7 +2326,7 @@ export const cloneSpell: ArmyItem = {
 
 export const invincibilitySpell: ArmyItem = {
   category: 'spell',
-  name: 'Invincibility Spell',
+  name: 'Invisibility Spell',
   unlock_building_level_required: 6,
   levels: [
     {
