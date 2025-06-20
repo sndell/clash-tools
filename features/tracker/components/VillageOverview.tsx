@@ -16,8 +16,7 @@ export const VillageOverview = () => {
   return (
     <article className="grid flex-1 grid-cols-[auto_1fr] overflow-hidden rounded-xl border divide-x bg-primary border-primary divide-primary">
       <TownHallImage />
-
-      <div className="w-full">
+      <div className="w-full min-w-0">
         <header className="flex divide-x divide-primary">
           <PlayerInfo name="Phuni" id="2LUCULPQ2" />
           <IconButton icon="icon-[solar--refresh-bold]" onClick={handleRefresh} />
@@ -35,7 +34,7 @@ const IconButton = ({ icon, onClick, className }: { icon: string; onClick?: () =
   <button
     onClick={onClick}
     className={cn(
-      "grid place-content-center p-3 transition-colors cursor-pointer aspect-square hover:bg-primary-light",
+      "grid flex-shrink-0 place-content-center p-3 transition-colors cursor-pointer aspect-square hover:bg-primary-light",
       className
     )}
   >
@@ -44,7 +43,7 @@ const IconButton = ({ icon, onClick, className }: { icon: string; onClick?: () =
 );
 
 const TownHallImage = () => (
-  <div className="grid overflow-hidden place-items-center p-3 h-full aspect-square">
+  <div className="grid overflow-hidden flex-shrink-0 place-items-center p-3 h-full aspect-square">
     <Image
       src="/images/th17.webp"
       alt="Town Hall Level 17"
@@ -57,18 +56,18 @@ const TownHallImage = () => (
 
 const CategoryProgress = ({ category, progress }: { category: string; progress: number }) => (
   <div className="flex divide-x divide-primary">
-    <div className="flex relative flex-1 gap-2 justify-between items-center px-3 text-sm bg-secondary">
+    <div className="flex relative flex-1 gap-2 justify-between items-center px-3 min-w-0 text-sm bg-secondary">
       <div className="absolute left-0 h-full bg-primary-light" style={{ width: `${progress}%` }} />
-      <span className="relative z-10">{category}</span>
-      <span className="relative z-10 text-primary-dark">{progress}%</span>
+      <span className="relative z-10 truncate">{category}</span>
+      <span className="relative z-10 flex-shrink-0 text-primary-dark">{progress}%</span>
     </div>
     <IconButton icon="icon-[solar--alt-arrow-down-linear]" />
   </div>
 );
 
 const PlayerInfo = ({ name, id }: { name: string; id: string }) => (
-  <div className="flex flex-1 gap-2 items-center px-3">
-    <span>{name}</span>
-    <span className="text-sm text-primary-dark">#{id}</span>
+  <div className="flex flex-1 gap-2 items-center px-3 min-w-0">
+    <span className="truncate">{name}</span>
+    <span className="flex-shrink-0 text-sm text-primary-dark">#{id}</span>
   </div>
 );

@@ -13,14 +13,16 @@ export const StatisticsOverview = () => {
   };
 
   return (
-    <div className="flex overflow-hidden relative rounded-xl border bg-primary border-primary">
-      <AnimatePresence mode="wait" initial={false}>
-        {showTime ? (
-          <DisplayContainer key="time" title="Time" children={<TimeDisplay />} />
-        ) : (
-          <DisplayContainer key="resources" title="Resources" children={<ResourcesDisplay />} />
-        )}
-      </AnimatePresence>
+    <div className="flex overflow-hidden rounded-xl border bg-primary border-primary">
+      <div className="relative flex-1">
+        <AnimatePresence mode="popLayout" initial={false}>
+          {showTime ? (
+            <DisplayContainer key="time" title="Time" children={<TimeDisplay />} />
+          ) : (
+            <DisplayContainer key="resources" title="Resources" children={<ResourcesDisplay />} />
+          )}
+        </AnimatePresence>
+      </div>
       <ToggleDisplayButton showTime={showTime} onClick={toggleShowTime} />
     </div>
   );
@@ -32,7 +34,7 @@ const DisplayContainer = ({ children, title }: { children: React.ReactNode; titl
       initial={{ y: -10, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 10, opacity: 0 }}
-      className="grid place-content-center text-center gap-1.5 flex-1"
+      className="grid place-content-center text-center gap-1.5 flex-1 absolute inset-0"
     >
       <div className="text-sm text-primary-dark">{title}</div>
       {children}
