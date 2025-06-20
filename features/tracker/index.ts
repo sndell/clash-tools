@@ -1,3 +1,3 @@
 export * from "./components/VillageSelectButton";
-export * from "./components/Overview";
-export * from "./components/ResourceCost";
+export * from "./components/VillageOverview";
+export * from "./components/StatisticsOverview";

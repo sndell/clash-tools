@@ -56,3 +56,15 @@ body {
   font-weight: 200;
   font-family: "Geologica", sans-serif;
 }
+
+.text-gradient-gold {
+  @apply bg-clip-text font-bold text-transparent bg-gradient-to-r from-[#ECEC5E] to-[#F4D243];
+}
+
+.text-gradient-elixir {
+  @apply bg-clip-text font-bold text-transparent bg-gradient-to-r from-[#DE25CB] to-[#CC4EC6];
+}
+
+.text-gradient-dark-elixir {
+  @apply bg-clip-text font-bold text-transparent bg-gradient-to-r from-[#5F4C6B] to-[#4F3F59];
+}
