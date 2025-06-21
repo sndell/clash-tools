@@ -1,4 +1,30 @@
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, integer, jsonb } from "drizzle-orm/pg-core";
+
+export const clashAccount = pgTable("clash_account", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  tag: text("tag").notNull(),
+  name: text("name").notNull(),
+  townHallLevel: integer("town_hall_level").notNull(),
+  townHallWeaponLevel: integer("town_hall_weapon_level"),
+  buildings: jsonb("buildings"),
+  calculatedBuildings: jsonb("calculated_buildings"),
+  walls: jsonb("walls"),
+  troops: jsonb("troops"),
+  spells: jsonb("spells"),
+  heroes: jsonb("heroes"),
+  equipment: jsonb("equipment"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  updatedAt: timestamp("updated_at")
+    .$defaultFn(() => /* @__PURE__ */ new Date())
+    .notNull(),
+});
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
