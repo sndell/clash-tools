@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, boolean, integer, jsonb } from "drizzle-orm/pg-core";
 
-export const clashAccount = pgTable("clash_account", {
+export const clashVillage = pgTable("clash_village", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),

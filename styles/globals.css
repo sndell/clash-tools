@@ -9,17 +9,20 @@
   --accent: #ca5e00;
   --accent-light: #fd841a;
   --secondary: #0b0b0a;
+  --secondary-light: #111110;
   --divider: #2b2b2b;
 
   /* text color */
   --text-color-primary: #ffffff;
   --text-color-primary-dark: #797979;
+  --text-color-primary-darker: #595959;
   --text-color-placeholder: #9d9d9d;
   --text-color-accent: #ff963b;
+  --text-color-error: #fa5335;
 
   /* border color */
   --border-color-primary: #2b2b2b;
-  --border-color-secondary: #1b1b1b;
+  --border-color-secondary: #252525;
   --border-color-accent: #ff963b;
 }
 
@@ -30,12 +33,15 @@
   --background-color-primary: var(--primary);
   --background-color-primary-light: var(--primary-light);
   --background-color-secondary: var(--secondary);
+  --background-color-secondary-light: var(--secondary-light);
   --background-color-divider: var(--divider);
 
   --text-color-primary: var(--text-color-primary);
   --text-color-primary-dark: var(--text-color-primary-dark);
+  --text-color-primary-darker: var(--text-color-primary-darker);
   --text-color-placeholder: var(--text-color-placeholder);
   --text-color-accent: var(--text-color-accent);
+  --text-color-error: var(--text-color-error);
 
   --border-color-primary: var(--border-color-primary);
   --border-color-secondary: var(--border-color-secondary);
@@ -53,7 +59,7 @@ body {
   background-size: 40px 40px;
   background-color: var(--background);
   color: var(--text-color-primary);
-  font-weight: 200;
+  font-weight: 300;
   font-family: "Geologica", sans-serif;
 }
 

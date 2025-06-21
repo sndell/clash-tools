@@ -86,7 +86,7 @@ const MobileNav = ({ close, pathname }: { close: () => void; pathname: string })
         exit={{ width: 0 }}
         transition={{ duration: 0.15, ease: "easeInOut" }}
         onClick={(e) => e.stopPropagation()}
-        className="overflow-hidden border-r divide-y h-dvh bg-primary border-primary divide-primary"
+        className="overflow-hidden rounded-r-xl border-r divide-y h-dvh bg-primary border-primary divide-primary"
       >
         <div className="flex relative justify-center items-center p-3">
           <Logo />

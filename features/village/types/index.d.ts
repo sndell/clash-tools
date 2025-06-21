@@ -1,0 +1,147 @@
+// Base types for common structures
+type BadgeUrls = {
+  small: string;
+  large: string;
+  medium: string;
+};
+
+type IconUrls = {
+  small: string;
+  tiny: string;
+  medium: string;
+};
+
+type Clan = {
+  tag: string;
+  name: string;
+  clanLevel: number;
+  badgeUrls: BadgeUrls;
+};
+
+type League = {
+  id: number;
+  name: string;
+  iconUrls: IconUrls;
+};
+
+type BuilderBaseLeague = {
+  id: number;
+  name: string;
+};
+
+type SeasonRecord = {
+  id: string;
+  rank: number;
+  trophies: number;
+};
+
+type CurrentSeason = {
+  rank: number;
+  trophies: number;
+};
+
+type LegendStatistics = {
+  legendTrophies: number;
+  previousSeason: SeasonRecord;
+  bestSeason: SeasonRecord;
+  bestBuilderBaseSeason: SeasonRecord;
+  currentSeason: CurrentSeason;
+};
+
+type Achievement = {
+  name: string;
+  stars: number;
+  value: number;
+  target: number;
+  info: string;
+  completionInfo: string | null;
+  village: "home" | "builderBase" | "clanCapital";
+};
+
+type PlayerHouseElement = {
+  type: "ground" | "walls" | "roof" | "decoration";
+  id: number;
+};
+
+type PlayerHouse = {
+  elements: PlayerHouseElement[];
+};
+
+type Troop = {
+  name: string;
+  level: number;
+  maxLevel: number;
+  village: "home" | "builderBase";
+  superTroopIsActive?: boolean;
+};
+
+type Equipment = {
+  name: string;
+  level: number;
+  maxLevel: number;
+  village: "home" | "builderBase";
+};
+
+type Hero = {
+  name: string;
+  level: number;
+  maxLevel: number;
+  village: "home" | "builderBase";
+  equipment?: Equipment[];
+};
+
+type Spell = {
+  name: string;
+  level: number;
+  maxLevel: number;
+  village: "home" | "builderBase";
+};
+
+type Player = {
+  tag: string;
+  name: string;
+  townHallLevel: number;
+  townHallWeaponLevel: number;
+  expLevel: number;
+  trophies: number;
+  bestTrophies: number;
+  warStars: number;
+  attackWins: number;
+  defenseWins: number;
+  builderHallLevel: number;
+  builderBaseTrophies: number;
+  bestBuilderBaseTrophies: number;
+  role: "member" | "admin" | "coLeader" | "leader";
+  warPreference: "in" | "out";
+  donations: number;
+  donationsReceived: number;
+  clanCapitalContributions: number;
+  clan: Clan;
+  league: League;
+  builderBaseLeague: BuilderBaseLeague;
+  legendStatistics: LegendStatistics;
+  achievements: Achievement[];
+  playerHouse: PlayerHouse;
+  labels: any[];
+  troops: Troop[];
+  heroes: Hero[];
+  heroEquipment: Equipment[];
+  spells: Spell[];
+};
+
+type FormattedPlayer = Pick<
+  Player,
+  | "name"
+  | "tag"
+  | "townHallLevel"
+  | "expLevel"
+  | "league"
+  | "trophies"
+  | "clan"
+  | "heroes"
+  | "heroEquipment"
+  | "troops"
+  | "spells"
+> & {
+  townHallWeaponLevel: number;
+};

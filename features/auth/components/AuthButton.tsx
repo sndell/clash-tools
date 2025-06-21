@@ -1,13 +1,17 @@
 "use client";
 
 import { signIn, signOut, useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export const AuthButton = () => {
+  const router = useRouter();
+
   const handleSignIn = async () => {
     await signIn.social({ provider: "google" });
   };
 
   const handleSignOut = async () => {
+    router.refresh();
     await signOut();
   };
 

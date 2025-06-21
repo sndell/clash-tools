@@ -21,8 +21,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(geologica.variable, "antialiased h-dvh max-w-7xl mx-auto ")}>
-        <div className="px-3 h-full border-r border-l bg-background border-secondary">
+      <body className={cn(geologica.variable, "antialiased max-w-7xl mx-auto")}>
+        <div className="flex flex-col border-r border-l h-dvh bg-background border-secondary">
           <Header />
           {children}
         </div>
