@@ -75,7 +75,7 @@ type Troop = {
   superTroopIsActive?: boolean;
 };
 
-type Equipment = {
+type HeroEquipment = {
   name: string;
   level: number;
   maxLevel: number;
@@ -87,7 +87,7 @@ type Hero = {
   level: number;
   maxLevel: number;
   village: "home" | "builderBase";
-  equipment?: Equipment[];
+  equipment?: HeroEquipment[];
 };
 
 type Spell = {
@@ -125,7 +125,7 @@ type Player = {
   labels: any[];
   troops: Troop[];
   heroes: Hero[];
-  heroEquipment: Equipment[];
+  heroEquipment: HeroEquipment[];
   spells: Spell[];
 };
 
