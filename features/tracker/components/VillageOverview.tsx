@@ -38,7 +38,7 @@ const IconButton = ({ icon, onClick, className }: { icon: string; onClick?: () =
       className
     )}
   >
-    <span className={cn(icon, "max-xs:text-xl")} />
+    <span className={cn(icon, "max-sm:text-xl")} />
   </button>
 );
 

@@ -79,7 +79,7 @@ const ToggleDisplayButton = ({ showTime, onClick }: { showTime: boolean; onClick
     >
       <motion.span
         animate={{ rotate: showTime ? 180 : 0 }}
-        className="icon-[solar--sort-horizontal-linear] max-xs:text-xl"
+        className="icon-[solar--sort-horizontal-linear] max-sm:text-xl"
       />
     </button>
   );

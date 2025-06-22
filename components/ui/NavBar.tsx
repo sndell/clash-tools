@@ -22,12 +22,12 @@ export const NavBar = () => {
     <nav>
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="grid place-content-center p-3 rounded-xl border cursor-pointer xs:hidden bg-primary border-primary"
+        className="grid place-content-center p-3 rounded-xl border cursor-pointer sm:hidden bg-primary border-primary"
       >
         <span className="icon-[solar--hamburger-menu-linear] text-xl" />
       </button>
       <AnimatePresence>{isOpen && <MobileNav close={() => setIsOpen(false)} pathname={pathname} />}</AnimatePresence>
-      <div className="flex gap-8 max-xs:hidden">
+      <div className="flex gap-8 max-sm:hidden">
         {NAV_ITEMS.map((link) => (
           <NavLink key={link.href} {...link} isActive={link.href === pathname} />
         ))}
