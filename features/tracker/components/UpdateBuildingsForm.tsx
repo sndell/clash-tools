@@ -35,7 +35,7 @@ const MERGED_BUILDINGS: Record<string, Record<string, number>> = {
 
 export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }) => {
   const [buildings, setBuildings] = useState<BuildingData[]>(() => {
-    return manualBuildings.map((building) => {
+    const buildings = manualBuildings.map((building) => {
       const currentAmount = building.amount_per_town_hall.find((a) => a.th === townHallLevel)?.amount ?? 0;
       const previousAmount = building.amount_per_town_hall.find((a) => a.th === townHallLevel - 1)?.amount ?? 0;
       const extraAmount = EXTRA_BUILDINGS_BY_TH[townHallLevel]?.[building.name] ?? 0;
@@ -50,6 +50,8 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
         })),
       };
     });
+
+    return buildings.filter((b) => b.instances.length > 0);
   });
 
   const handleMergedBuilding = useCallback(
@@ -116,43 +118,10 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
   );
 };
 
-const BuildingLevelSelect = ({
-  buildingName,
-  instance,
-  instanceIndex,
-  onChange,
-}: {
-  buildingName: string;
-  instance: BuildingInstance;
-  instanceIndex: number;
-  onChange: (level: number) => void;
-}) => {
-  const buildingLevels = manualBuildings.find((b) => b.name === buildingName)?.levels ?? [];
-
-  return (
-    <div className="flex items-center gap-2">
-      <div>
-        Building #{instanceIndex + 1} - {instance.level}
-      </div>
-      <select
-        value={instance.level}
-        className="bg-primary py-2 px-3 border border-primary rounded-xl"
-        onChange={(e) => onChange(Number(e.target.value))}
-      >
-        {instance.isNew && <option value={0}>0</option>}
-        {buildingLevels.map((level) => (
-          <option key={level.level} value={level.level}>
-            {level.level}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
 const BuildingCard = ({
   building,
   onUpdateLevel,
+  maxLevel,
 }: {
   building: BuildingData;
   onUpdateLevel: (instanceIndex: number, level: number, isNew: boolean) => void;
@@ -170,9 +139,44 @@ const BuildingCard = ({
               instance={instance}
               instanceIndex={index}
               onChange={(level) => onUpdateLevel(index, level, instance.isNew)}
+              maxLevel={maxLevel}
             />
           )
       )}
     </div>
   </div>
 );
+
+const BuildingLevelSelect = ({
+  buildingName,
+  instance,
+  instanceIndex,
+  onChange,
+  maxLevel,
+}: {
+  buildingName: string;
+  instance: BuildingInstance;
+  instanceIndex: number;
+  onChange: (level: number) => void;
+  maxLevel: number;
+}) => {
+  return (
+    <div className="flex items-center gap-2">
+      <div>
+        Building #{instanceIndex + 1} - {instance.level}
+      </div>
+      <select
+        value={instance.level}
+        className="bg-primary py-2 px-3 border border-primary rounded-xl"
+        onChange={(e) => onChange(Number(e.target.value))}
+      >
+        {instance.isNew && <option value={0}>0</option>}
+        {Array.from({ length: maxLevel }, (_, index) => index + 1).map((level) => (
+          <option key={level} value={level}>
+            {level}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
