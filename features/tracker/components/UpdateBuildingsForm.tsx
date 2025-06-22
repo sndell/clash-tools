@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { manualBuildings } from "@/data/structures";
+import Image from "next/image";
 
 type BuildingInstance = {
   level: number;
@@ -10,7 +11,7 @@ type BuildingInstance = {
 type BuildingData = {
   name: string;
   instances: BuildingInstance[];
-  maxLevel: number;
+  levels: BuildingLevel[];
 };
 
 const EXTRA_BUILDINGS_BY_TH: Record<number, Record<string, number>> = {
@@ -42,7 +43,7 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
 
       return {
         name: building.name,
-        maxLevel: building.levels.filter((l) => l.town_hall <= townHallLevel).length,
+        levels: building.levels.filter((l) => l.town_hall <= townHallLevel),
         instances: Array.from({ length: currentAmount }, (_, index) => ({
           level: index + 1 + extraAmount > previousAmount ? 0 : 1,
           isMerged: false,
@@ -111,7 +112,7 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
           key={building.name}
           building={building}
           onUpdateLevel={(instanceIndex, level, isNew) => handleUpdateLevel(building.name, instanceIndex, level, isNew)}
-          maxLevel={building.maxLevel}
+          levels={building.levels}
         />
       ))}
     </div>
@@ -121,29 +122,28 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
 const BuildingCard = ({
   building,
   onUpdateLevel,
-  maxLevel,
+  levels,
 }: {
   building: BuildingData;
   onUpdateLevel: (instanceIndex: number, level: number, isNew: boolean) => void;
-  maxLevel: number;
+  levels: BuildingLevel[];
 }) => (
-  <div className="p-3 bg-secondary border border-secondary rounded-xl">
-    <div className="font-medium mb-2">{building.name}</div>
-    <div className="space-y-2">
-      {building.instances.map(
-        (instance, index) =>
-          !instance.isMerged && (
-            <BuildingLevelSelect
-              key={index}
-              buildingName={building.name}
-              instance={instance}
-              instanceIndex={index}
-              onChange={(level) => onUpdateLevel(index, level, instance.isNew)}
-              maxLevel={maxLevel}
-            />
-          )
-      )}
-    </div>
+  <div className=" bg-secondary border border-secondary rounded-xl pb-1.5">
+    <div className="font-medium p-3">{building.name}</div>
+
+    {building.instances.map(
+      (instance, index) =>
+        !instance.isMerged && (
+          <BuildingLevelSelect
+            key={index}
+            buildingName={building.name}
+            instance={instance}
+            instanceIndex={index}
+            onChange={(level) => onUpdateLevel(index, level, instance.isNew)}
+            levels={levels}
+          />
+        )
+    )}
   </div>
 );
 
@@ -152,18 +152,23 @@ const BuildingLevelSelect = ({
   instance,
   instanceIndex,
   onChange,
-  maxLevel,
+  levels,
 }: {
   buildingName: string;
   instance: BuildingInstance;
   instanceIndex: number;
   onChange: (level: number) => void;
-  maxLevel: number;
+  levels: BuildingLevel[];
 }) => {
   return (
-    <div className="flex items-center gap-2">
-      <div>
-        Building #{instanceIndex + 1} - {instance.level}
+    <div className="flex items-center justify-between hover:bg-background transition-colors px-3 py-1.5">
+      <div className="p-3 bg-background rounded-xl border border-secondary h-16 aspect-square flex items-center justify-center">
+        <Image
+          src={`/images${levels[instance.level > 0 ? instance.level - 1 : 0].image_name}`}
+          alt={buildingName}
+          width={40}
+          height={40}
+        />
       </div>
       <select
         value={instance.level}
@@ -171,9 +176,9 @@ const BuildingLevelSelect = ({
         onChange={(e) => onChange(Number(e.target.value))}
       >
         {instance.isNew && <option value={0}>0</option>}
-        {Array.from({ length: maxLevel }, (_, index) => index + 1).map((level) => (
-          <option key={level} value={level}>
-            {level}
+        {levels.map((_, index) => (
+          <option key={index} value={index + 1}>
+            {index + 1}
           </option>
         ))}
       </select>

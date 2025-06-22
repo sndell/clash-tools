@@ -5322,4 +5322,11 @@ export const manualBuildings: Building[] = [
   blacksmith,
   heroHall,
   bomb,
+  springTrap,
+  giantBomb,
+  airBomb,
+  seekingAirMine,
+  skeletonTrap,
+  tornadoTrap,
+  gigaBomb,
 ];
