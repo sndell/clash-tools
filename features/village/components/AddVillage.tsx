@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { VillageDataForm } from "./VillageDataForm";
 import { cn } from "@/util/cn";
+import { UpdateBuildingsForm } from "@/features/tracker";
 
 enum Stage {
   Account = "account",
@@ -48,25 +49,25 @@ export const AddVillage = () => {
   };
 
   return (
-    <div className="flex-1 p-3 border-t xs:border xs:rounded-xl xs:mx-3 xs:mb-3 bg-primary border-primary">
-      <div className="flex flex-col gap-3 h-full">
-        <StageHeader stage={stage} />
+    <div className="grid grid-rows-[auto_1fr_auto] gap-3 overflow-y-auto flex-1 p-3 border-t xs:border xs:rounded-xl xs:mx-3 xs:mb-3 bg-primary border-primary">
+      <StageHeader stage={stage} />
 
-        {stage === Stage.Account && (
-          <div className="mx-auto w-full max-w-sm">
-            <VillageDataForm setAccountData={setAccountData} accountData={accountData} />
-          </div>
-        )}
+      {stage === Stage.Account && (
+        <div className="mx-auto w-full max-w-md">
+          <VillageDataForm setAccountData={setAccountData} accountData={accountData} />
+        </div>
+      )}
 
-        <div className="grid flex-1 items-end">
-          <div className="grid grid-cols-[auto_1fr] gap-2 w-full mx-auto max-w-sm">
-            <BackButton onClick={handleNavigation.back} isEnabled={stage !== Stage.Account} />
-            <ContinueButton
-              stage={stage}
-              isEnabled={stage === Stage.Account ? !!accountData : true}
-              onClick={handleNavigation.continue}
-            />
-          </div>
+      {stage === Stage.Building && accountData && <UpdateBuildingsForm townHallLevel={accountData.townHallLevel} />}
+
+      <div className="grid items-end">
+        <div className="grid grid-cols-[auto_1fr] gap-2 w-full mx-auto max-w-md">
+          <BackButton onClick={handleNavigation.back} isEnabled={stage !== Stage.Account} />
+          <ContinueButton
+            stage={stage}
+            isEnabled={stage === Stage.Account ? !!accountData : true}
+            onClick={handleNavigation.continue}
+          />
         </div>
       </div>
     </div>
@@ -103,7 +104,7 @@ const StageHeader = ({ stage }: { stage: Stage }) => {
   const content = STAGE_CONTENT[stage];
 
   return (
-    <div className="py-3 mx-auto max-w-sm text-center">
+    <div className="py-3 mx-auto max-w-md text-center">
       <h1 className="text-2xl font-bold">{content.title}</h1>
       <p className="text-primary-dark">{content.description}</p>
     </div>
