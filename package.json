@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
+    "babel-plugin-react-compiler": "19.1.0-rc.2",
     "better-auth": "^1.2.9",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.2",
