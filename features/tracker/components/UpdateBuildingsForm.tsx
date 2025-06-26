@@ -49,17 +49,21 @@ function updateBuildingLevel(
   );
 }
 
-function updateMergedStatus(instances: BuildingInstance[], amount: number, mode: "add" | "remove"): void {
+function updateMergedStatus(instances: BuildingInstance[], amount: number, mode: "add" | "remove"): BuildingInstance[] {
   let mergedCount = 0;
-  for (let i = 0; i < instances.length && mergedCount < amount; i++) {
-    if (mode === "add" && !instances[i].isMerged) {
-      instances[i].isMerged = true;
+  return instances.map((instance, i) => {
+    if (mergedCount >= amount) return instance;
+
+    if (mode === "add" && !instance.isMerged) {
       mergedCount++;
-    } else if (mode === "remove" && instances[i].isMerged) {
-      instances[i].isMerged = false;
+      return { ...instance, isMerged: true };
+    } else if (mode === "remove" && instance.isMerged) {
       mergedCount++;
+      return { ...instance, isMerged: false };
     }
-  }
+
+    return instance;
+  });
 }
 
 export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }) => {
@@ -69,14 +73,18 @@ export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }
     const buildingsToMerge = MERGED_BUILDINGS[buildingName];
     if (!buildingsToMerge) return;
 
-    Object.entries(buildingsToMerge).forEach(([building, amount]) => {
-      const buildingData = updatedBuildings.find((b) => b.name === building);
-      if (!buildingData) return;
-
-      updateMergedStatus(buildingData.instances, amount, mode);
+    const finalBuildings = updatedBuildings.map((building) => {
+      const amountToMerge = buildingsToMerge[building.name];
+      if (amountToMerge) {
+        return {
+          ...building,
+          instances: updateMergedStatus(building.instances, amountToMerge, mode),
+        };
+      }
+      return building;
     });
 
-    setBuildings(updatedBuildings);
+    setBuildings(finalBuildings);
   };
 
   const updateLevel = (buildingName: string, instanceIndex: number, level: number, isNew: boolean) => {
