@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { manualBuildings } from "@/data/structures";
 import Image from "next/image";
 import { createPortal } from "react-dom";
@@ -31,82 +31,104 @@ const MERGED_BUILDINGS: Record<string, Record<string, number>> = {
   "Multi-Gear Tower": { "Archer Tower": 1, Cannon: 1 },
 };
 
+function updateBuildingLevel(
+  buildings: BuildingData[],
+  buildingName: string,
+  instanceIndex: number,
+  level: number
+): BuildingData[] {
+  return buildings.map((building) =>
+    building.name === buildingName
+      ? {
+          ...building,
+          instances: building.instances.map((instance, idx) =>
+            idx === instanceIndex ? { ...instance, level } : instance
+          ),
+        }
+      : building
+  );
+}
+
+function updateMergedStatus(instances: BuildingInstance[], amount: number, mode: "add" | "remove"): void {
+  let mergedCount = 0;
+  for (let i = 0; i < instances.length && mergedCount < amount; i++) {
+    if (mode === "add" && !instances[i].isMerged) {
+      instances[i].isMerged = true;
+      mergedCount++;
+    } else if (mode === "remove" && instances[i].isMerged) {
+      instances[i].isMerged = false;
+      mergedCount++;
+    }
+  }
+}
+
 export const UpdateBuildingsForm = ({ townHallLevel }: { townHallLevel: number }) => {
   const [buildings, setBuildings] = useState<BuildingData[]>(() => initializeBuildings(townHallLevel));
 
-  const handleMergedBuilding = useCallback(
-    (buildingName: string, updatedBuildings: BuildingData[], mode: "add" | "remove") => {
-      const buildingsToMerge = MERGED_BUILDINGS[buildingName];
-      if (!buildingsToMerge) return;
+  const handleMergedBuilding = (buildingName: string, updatedBuildings: BuildingData[], mode: "add" | "remove") => {
+    const buildingsToMerge = MERGED_BUILDINGS[buildingName];
+    if (!buildingsToMerge) return;
 
-      Object.entries(buildingsToMerge).forEach(([building, amount]) => {
-        const buildingData = updatedBuildings.find((b) => b.name === building);
-        if (!buildingData) return;
+    Object.entries(buildingsToMerge).forEach(([building, amount]) => {
+      const buildingData = updatedBuildings.find((b) => b.name === building);
+      if (!buildingData) return;
 
-        updateMergedStatus(buildingData.instances, amount, mode);
-      });
+      updateMergedStatus(buildingData.instances, amount, mode);
+    });
 
+    setBuildings(updatedBuildings);
+  };
+
+  const updateLevel = (buildingName: string, instanceIndex: number, level: number, isNew: boolean) => {
+    const currentLevel = buildings.find((b) => b.name === buildingName)?.instances[instanceIndex].level;
+    const updatedBuildings = updateBuildingLevel(buildings, buildingName, instanceIndex, level);
+
+    const shouldMerge = isNew && buildingName in MERGED_BUILDINGS;
+    if (shouldMerge && (level === 0 || currentLevel === 0)) {
+      handleMergedBuilding(buildingName, updatedBuildings, level > 0 ? "add" : "remove");
+    } else {
       setBuildings(updatedBuildings);
-    },
-    []
-  );
+    }
+  };
 
-  const updateLevel = useCallback(
-    (buildingName: string, instanceIndex: number, level: number, isNew: boolean) => {
-      const currentLevel = buildings.find((b) => b.name === buildingName)?.instances[instanceIndex].level;
-      const updatedBuildings = updateBuildingLevel(buildings, buildingName, instanceIndex, level);
+  const updateAllLevels = (buildingName: string, level: number) => {
+    const building = buildings.find((b) => b.name === buildingName);
+    if (!building) return;
 
-      const shouldMerge = isNew && buildingName in MERGED_BUILDINGS;
-      if (shouldMerge && (level === 0 || currentLevel === 0)) {
-        handleMergedBuilding(buildingName, updatedBuildings, level > 0 ? "add" : "remove");
-      } else {
-        setBuildings(updatedBuildings);
-      }
-    },
-    [buildings, handleMergedBuilding]
-  );
+    const updatedBuildings = buildings.map((b) =>
+      b.name === buildingName
+        ? {
+            ...b,
+            instances: b.instances.map((instance) => ({
+              ...instance,
+              level,
+            })),
+          }
+        : b
+    );
 
-  const updateAllLevels = useCallback(
-    (buildingName: string, level: number) => {
-      const building = buildings.find((b) => b.name === buildingName);
-      if (!building) return;
-
-      const updatedBuildings = buildings.map((b) =>
-        b.name === buildingName
-          ? {
-              ...b,
-              instances: b.instances.map((instance) => ({
-                ...instance,
-                level,
-              })),
-            }
-          : b
+    // Check if this building type can be merged and handle accordingly
+    const shouldMerge = buildingName in MERGED_BUILDINGS;
+    if (shouldMerge) {
+      // Check if any instances are being set to 0 or from 0
+      const hasInstancesChangingToZero = building.instances.some(
+        (instance) => instance.isNew && instance.level !== 0 && level === 0
+      );
+      const hasInstancesChangingFromZero = building.instances.some(
+        (instance) => instance.isNew && instance.level === 0 && level > 0
       );
 
-      // Check if this building type can be merged and handle accordingly
-      const shouldMerge = buildingName in MERGED_BUILDINGS;
-      if (shouldMerge) {
-        // Check if any instances are being set to 0 or from 0
-        const hasInstancesChangingToZero = building.instances.some(
-          (instance) => instance.isNew && instance.level !== 0 && level === 0
-        );
-        const hasInstancesChangingFromZero = building.instances.some(
-          (instance) => instance.isNew && instance.level === 0 && level > 0
-        );
-
-        if (hasInstancesChangingToZero) {
-          handleMergedBuilding(buildingName, updatedBuildings, "remove");
-        } else if (hasInstancesChangingFromZero) {
-          handleMergedBuilding(buildingName, updatedBuildings, "add");
-        } else {
-          setBuildings(updatedBuildings);
-        }
+      if (hasInstancesChangingToZero) {
+        handleMergedBuilding(buildingName, updatedBuildings, "remove");
+      } else if (hasInstancesChangingFromZero) {
+        handleMergedBuilding(buildingName, updatedBuildings, "add");
       } else {
         setBuildings(updatedBuildings);
       }
-    },
-    [buildings, handleMergedBuilding]
-  );
+    } else {
+      setBuildings(updatedBuildings);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
@@ -133,13 +155,10 @@ const BuildingCard = ({
 }) => {
   const [isChangeAllModalOpen, setIsChangeAllModalOpen] = useState(false);
 
-  const handleChangeAllSelect = useCallback(
-    (level: number) => {
-      setIsChangeAllModalOpen(false);
-      onUpdateAllLevels(level);
-    },
-    [onUpdateAllLevels]
-  );
+  const handleChangeAllSelect = (level: number) => {
+    setIsChangeAllModalOpen(false);
+    onUpdateAllLevels(level);
+  };
 
   return (
     <>
@@ -281,13 +300,10 @@ const LevelSelectModal = ({
   onClose: () => void;
   onSelect: (level: number) => void;
 }) => {
-  const handleSelect = useCallback(
-    (level: number) => {
-      onClose();
-      onSelect(level);
-    },
-    [onSelect, onClose]
-  );
+  const handleSelect = (level: number) => {
+    onClose();
+    onSelect(level);
+  };
 
   return createPortal(
     <div
@@ -330,13 +346,15 @@ const LevelOption = ({
     onClick={onClick}
     className="flex gap-3 justify-center items-center py-1 transition-colors hover:bg-background"
   >
-    <Image
-      src={`/images${image}`}
-      alt={`Level ${level}`}
-      width={32}
-      height={32}
-      className={cn(isDisabled && "opacity-50")}
-    />
+    <div>
+      <Image
+        src={`/images${image}`}
+        alt={`Level ${level}`}
+        width={40}
+        height={40}
+        className={cn("aspect-square object-contain", isDisabled && "opacity-50")}
+      />
+    </div>
     <span className="text-primary-dark">Level</span>
     {level}
   </button>
@@ -361,35 +379,4 @@ function initializeBuildings(townHallLevel: number): BuildingData[] {
   });
 
   return buildings.filter((b) => b.instances.length > 0);
-}
-
-function updateBuildingLevel(
-  buildings: BuildingData[],
-  buildingName: string,
-  instanceIndex: number,
-  level: number
-): BuildingData[] {
-  return buildings.map((building) =>
-    building.name === buildingName
-      ? {
-          ...building,
-          instances: building.instances.map((instance, idx) =>
-            idx === instanceIndex ? { ...instance, level } : instance
-          ),
-        }
-      : building
-  );
-}
-
-function updateMergedStatus(instances: BuildingInstance[], amount: number, mode: "add" | "remove"): void {
-  let mergedCount = 0;
-  for (let i = 0; i < instances.length && mergedCount < amount; i++) {
-    if (mode === "add" && !instances[i].isMerged) {
-      instances[i].isMerged = true;
-      mergedCount++;
-    } else if (mode === "remove" && instances[i].isMerged) {
-      instances[i].isMerged = false;
-      mergedCount++;
-    }
-  }
 }
