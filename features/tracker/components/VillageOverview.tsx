@@ -7,18 +7,9 @@ import { CATEGORIES } from "../data";
 import { RefObject, useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { AnimatePresence, motion } from "motion/react";
+import { useTracker } from "../context/TrackerConctext";
 
-export const VillageOverview = ({
-  name,
-  tag,
-  selectedCategory,
-  onSelectCategory,
-}: {
-  name: string;
-  tag: string;
-  selectedCategory: keyof typeof CATEGORIES;
-  onSelectCategory: (category: keyof typeof CATEGORIES) => void;
-}) => {
+export const VillageOverview = ({ name, tag }: { name: string; tag: string }) => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
 
   const handleRefresh = () => {
@@ -41,12 +32,7 @@ export const VillageOverview = ({
       <div className="w-full min-w-0">
         <VillageHeader name={name} tag={tag} onRefresh={handleRefresh} onEdit={handleEdit} />
         <Divider direction="horizontal" />
-        <CategorySection
-          selectedCategory={selectedCategory}
-          onSelectCategory={onSelectCategory}
-          isCategoryMenuOpen={isCategoryMenuOpen}
-          setIsCategoryMenuOpen={setIsCategoryMenuOpen}
-        />
+        <CategorySection isCategoryMenuOpen={isCategoryMenuOpen} setIsCategoryMenuOpen={setIsCategoryMenuOpen} />
       </div>
     </article>
   );
@@ -109,18 +95,15 @@ const ActionButton = ({
 );
 
 const CategorySection = ({
-  selectedCategory,
-  onSelectCategory,
   isCategoryMenuOpen,
   setIsCategoryMenuOpen,
 }: {
-  selectedCategory: keyof typeof CATEGORIES;
-  onSelectCategory: (category: keyof typeof CATEGORIES) => void;
   isCategoryMenuOpen: boolean;
   setIsCategoryMenuOpen: (isOpen: boolean) => void;
 }) => {
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const { category, setCategory } = useTracker();
   const progress = 50; // TODO: Calculate actual progress
 
   useOnClickOutside(menuRef as RefObject<HTMLElement>, (event) => {
@@ -129,42 +112,35 @@ const CategorySection = ({
   });
 
   const handleSelectCategory = (category: keyof typeof CATEGORIES) => {
-    onSelectCategory(category);
+    setCategory(category);
     setIsCategoryMenuOpen(false);
   };
 
   return (
-    <div className="relative">
-      <div className="flex w-full divide-x divide-primary">
-        <ProgressBar category={selectedCategory} progress={progress} />
-        <ActionButton
-          icon="icon-[solar--alt-arrow-down-linear]"
-          onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
-          ref={buttonRef as RefObject<HTMLButtonElement>}
-        />
+    <div className="flex w-full divide-x divide-primary">
+      <div className="flex relative flex-1 gap-2 justify-between items-center px-3 min-w-0 text-sm bg-secondary">
+        <div className="absolute left-0 h-full bg-primary-light" style={{ width: `${progress}%` }} />
+        <span className="relative z-10 truncate">{category}</span>
+        <span className="relative z-10 flex-shrink-0 text-primary-dark">{progress}%</span>
+        <AnimatePresence>
+          {isCategoryMenuOpen && (
+            <CategoryDropdown
+              ref={menuRef}
+              selectedCategory={category}
+              onSelectCategory={handleSelectCategory}
+              progress={progress}
+            />
+          )}
+        </AnimatePresence>
       </div>
-
-      <AnimatePresence>
-        {isCategoryMenuOpen && (
-          <CategoryDropdown
-            ref={menuRef}
-            selectedCategory={selectedCategory}
-            onSelectCategory={handleSelectCategory}
-            progress={progress}
-          />
-        )}
-      </AnimatePresence>
+      <ActionButton
+        icon="icon-[solar--alt-arrow-down-linear]"
+        onClick={() => setIsCategoryMenuOpen(!isCategoryMenuOpen)}
+        ref={buttonRef as RefObject<HTMLButtonElement>}
+      />
     </div>
   );
 };
-
-const ProgressBar = ({ category, progress }: { category: string; progress: number }) => (
-  <div className="flex relative flex-1 gap-2 justify-between items-center px-3 min-w-0 text-sm bg-secondary">
-    <div className="absolute left-0 h-full bg-primary-light" style={{ width: `${progress}%` }} />
-    <span className="relative z-10 truncate">{category}</span>
-    <span className="relative z-10 flex-shrink-0 text-primary-dark">{progress}%</span>
-  </div>
-);
 
 const CategoryDropdown = ({
   selectedCategory,

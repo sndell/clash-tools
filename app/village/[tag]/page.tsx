@@ -1,4 +1,6 @@
 import { Tracker } from "@/features/tracker/components/Tracker";
+import { TrackerProvider } from "@/features/tracker/context/TrackerConctext";
+import { DbPlayer } from "@/features/tracker/types";
 import { getVillageData } from "@/features/village";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -12,5 +14,9 @@ export default async function Page({ params }: { params: Promise<{ tag: string }
 
   if ("error" in village) return <div>{village.error}</div>;
 
-  return <Tracker name={village.name} tag={village.tag} />;
+  return (
+    <TrackerProvider village={village as DbPlayer}>
+      <Tracker name={village.name} tag={village.tag} />
+    </TrackerProvider>
+  );
 }
