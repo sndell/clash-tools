@@ -1,6 +1,7 @@
 export const cannon: Building = {
   category: "defence",
   name: "Cannon",
+  dataId: 1000008,
   amount_per_town_hall: [
     { th: 1, amount: 2 },
     { th: 2, amount: 2 },
@@ -174,6 +175,7 @@ export const cannon: Building = {
 export const archerTower: Building = {
   category: "defence",
   name: "Archer Tower",
+  dataId: 1000009,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 1 },
@@ -347,6 +349,7 @@ export const archerTower: Building = {
 export const mortar: Building = {
   category: "defence",
   name: "Mortar",
+  dataId: 1000013,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -501,6 +504,7 @@ export const mortar: Building = {
 export const airDefense: Building = {
   category: "defence",
   name: "Air Defense",
+  dataId: 1000012,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -648,6 +652,7 @@ export const airDefense: Building = {
 export const wizardTower: Building = {
   category: "defence",
   name: "Wizard Tower",
+  dataId: 1000011,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -809,6 +814,7 @@ export const wizardTower: Building = {
 export const airSweeper: Building = {
   category: "defence",
   name: "Air Sweeper",
+  dataId: 1000028,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -884,6 +890,7 @@ export const airSweeper: Building = {
 export const hiddenTesla: Building = {
   category: "defence",
   name: "Hidden Tesla",
+  dataId: 1000016,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1038,6 +1045,7 @@ export const hiddenTesla: Building = {
 export const bombTower: Building = {
   category: "defence",
   name: "Bomb Tower",
+  dataId: 1000032,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1164,6 +1172,7 @@ export const bombTower: Building = {
 export const xBow: Building = {
   category: "defence",
   name: "X-Bow",
+  dataId: 1000021,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1290,6 +1299,7 @@ export const xBow: Building = {
 export const infernoTower: Building = {
   category: "defence",
   name: "Inferno Tower",
+  dataId: 1000027,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1409,6 +1419,7 @@ export const infernoTower: Building = {
 export const eagleArtillery: Building = {
   category: "defence",
   name: "Eagle Artillery",
+  dataId: 1000031,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1484,6 +1495,7 @@ export const eagleArtillery: Building = {
 export const scattershot: Building = {
   category: "defence",
   name: "Scattershot",
+  dataId: 1000067,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1568,6 +1580,7 @@ export const scattershot: Building = {
 export const buildersHut: Building = {
   category: "defence",
   name: "Builders Hut",
+  dataId: 1000015,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1659,6 +1672,7 @@ export const buildersHut: Building = {
 export const spellTower: Building = {
   category: "defence",
   name: "Spell Tower",
+  dataId: 1000072,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1706,6 +1720,7 @@ export const spellTower: Building = {
 export const monolith: Building = {
   category: "defence",
   name: "Monolith",
+  dataId: 1000077,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1776,6 +1791,7 @@ export const monolith: Building = {
 export const firespitter: Building = {
   category: "defence",
   name: "Firespitter",
+  dataId: 1000089,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -1832,6 +1848,7 @@ export const firespitter: Building = {
 export const wall: Building = {
   category: "wall",
   name: "Wall",
+  dataId: 1000010,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 25 },
@@ -1984,6 +2001,7 @@ export const wall: Building = {
 export const multiArcherTower: Building = {
   category: "defence",
   name: "Multi-Archer Tower",
+  dataId: 1000084,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2047,6 +2065,7 @@ export const multiArcherTower: Building = {
 export const ricochetCannon: Building = {
   category: "defence",
   name: "Ricochet Cannon",
+  dataId: 1000085,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2110,6 +2129,7 @@ export const ricochetCannon: Building = {
 export const multiGearTower: Building = {
   category: "defence",
   name: "Multi-Gear Tower",
+  dataId: 1000079,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2166,6 +2186,7 @@ export const multiGearTower: Building = {
 export const townHall12Weapon: Building = {
   category: "defence",
   name: "TH12 Weapon",
+  dataId: 420,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2227,6 +2248,7 @@ export const townHall12Weapon: Building = {
 export const townHall13Weapon: Building = {
   category: "defence",
   name: "TH13 Weapon",
+  dataId: 420,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2288,6 +2310,7 @@ export const townHall13Weapon: Building = {
 export const townHall14Weapon: Building = {
   category: "defence",
   name: "TH14 Weapon",
+  dataId: 420,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2349,6 +2372,7 @@ export const townHall14Weapon: Building = {
 export const townHall15Weapon: Building = {
   category: "defence",
   name: "TH15 Weapon",
+  dataId: 420,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2410,6 +2434,7 @@ export const townHall15Weapon: Building = {
 export const townHall17Weapon: Building = {
   category: "defence",
   name: "TH17 Weapon",
+  dataId: 420,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2471,6 +2496,7 @@ export const townHall17Weapon: Building = {
 export const bomb: Building = {
   category: "trap",
   name: "Bomb",
+  dataId: 12000000,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2588,6 +2614,7 @@ export const bomb: Building = {
 export const springTrap: Building = {
   category: "trap",
   name: "Spring Trap",
+  dataId: 12000001,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2649,6 +2676,7 @@ export const springTrap: Building = {
 export const giantBomb: Building = {
   category: "trap",
   name: "Giant Bomb",
+  dataId: 12000002,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2752,6 +2780,7 @@ export const giantBomb: Building = {
 export const airBomb: Building = {
   category: "trap",
   name: "Air Bomb",
+  dataId: 12000005,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2862,6 +2891,7 @@ export const airBomb: Building = {
 export const seekingAirMine: Building = {
   category: "trap",
   name: "Seeking Air Mine",
+  dataId: 12000006,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2937,6 +2967,7 @@ export const seekingAirMine: Building = {
 export const skeletonTrap: Building = {
   category: "trap",
   name: "Skeleton Trap",
+  dataId: 12000008,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -2991,6 +3022,7 @@ export const skeletonTrap: Building = {
 export const tornadoTrap: Building = {
   category: "trap",
   name: "Tornado Trap",
+  dataId: 12000016,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -3038,6 +3070,7 @@ export const tornadoTrap: Building = {
 export const gigaBomb: Building = {
   category: "trap",
   name: "Giga Bomb",
+  dataId: 12000020,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -3085,6 +3118,7 @@ export const gigaBomb: Building = {
 export const goldMine: Building = {
   category: "resource",
   name: "Gold Mine",
+  dataId: 1000005,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 2 },
@@ -3244,6 +3278,7 @@ export const goldMine: Building = {
 export const elixirCollector: Building = {
   category: "resource",
   name: "Elixir Collector",
+  dataId: 1000002,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 2 },
@@ -3403,6 +3438,7 @@ export const elixirCollector: Building = {
 export const goldStorage: Building = {
   category: "resource",
   name: "Gold Storage",
+  dataId: 1000005,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 1 },
@@ -3555,6 +3591,7 @@ export const goldStorage: Building = {
 export const elixirStorage: Building = {
   category: "resource",
   name: "Elixir Storage",
+  dataId: 1000003,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 1 },
@@ -3707,6 +3744,7 @@ export const elixirStorage: Building = {
 export const darkElixirDrill: Building = {
   category: "resource",
   name: "Dark Elixir Drill",
+  dataId: 1000023,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -3826,6 +3864,7 @@ export const darkElixirDrill: Building = {
 export const darkElixirStorage: Building = {
   category: "resource",
   name: "Dark Elixir Storage",
+  dataId: 1000024,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -3936,6 +3975,7 @@ export const darkElixirStorage: Building = {
 export const clanCastle: Building = {
   category: "army",
   name: "Clan Castle",
+  dataId: 1000014,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 1 },
@@ -4053,6 +4093,7 @@ export const clanCastle: Building = {
 export const armyCamp: Building = {
   category: "army",
   name: "Army Camp",
+  dataId: 1000000,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 1 },
@@ -4170,6 +4211,7 @@ export const armyCamp: Building = {
 export const barracks: Building = {
   category: "army",
   name: "Barracks",
+  dataId: 1000018,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 1 },
@@ -4322,6 +4364,7 @@ export const barracks: Building = {
 export const darkBarracks: Building = {
   category: "army",
   name: "Dark Barracks",
+  dataId: 1000026,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4432,6 +4475,7 @@ export const darkBarracks: Building = {
 export const laboratory: Building = {
   category: "army",
   name: "Laboratory",
+  dataId: 1000007,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4563,6 +4607,7 @@ export const laboratory: Building = {
 export const spellFactory: Building = {
   category: "army",
   name: "Spell Factory",
+  dataId: 1000072,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4645,6 +4690,7 @@ export const spellFactory: Building = {
 export const heroHall: Building = {
   category: "army",
   name: "Hero Hall",
+  dataId: 1000071,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4748,6 +4794,7 @@ export const heroHall: Building = {
 export const darkSpellFactory: Building = {
   category: "army",
   name: "Dark Spell Factory",
+  dataId: 1000029,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4823,6 +4870,7 @@ export const darkSpellFactory: Building = {
 export const blacksmith: Building = {
   category: "army",
   name: "Blacksmith",
+  dataId: 1000070,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4912,6 +4960,7 @@ export const blacksmith: Building = {
 export const workshop: Building = {
   category: "army",
   name: "Workshop",
+  dataId: 1000020,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -4994,6 +5043,7 @@ export const workshop: Building = {
 export const petHouse: Building = {
   category: "army",
   name: "Pet House",
+  dataId: 1000068,
   amount_per_town_hall: [
     { th: 1, amount: 0 },
     { th: 2, amount: 0 },
@@ -5097,6 +5147,7 @@ export const petHouse: Building = {
 export const townHall: Building = {
   category: "town_hall",
   name: "Town Hall",
+  dataId: 1000001,
   amount_per_town_hall: [
     { th: 1, amount: 1 },
     { th: 2, amount: 1 },

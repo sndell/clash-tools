@@ -4,28 +4,28 @@ import { useEffect, useState } from "react";
 import { getVillageData } from "../actions/getVillageData";
 import Image from "next/image";
 
-type VillageDataFormProps = {
+export const VillageDataForm = ({
+  setAccountData,
+  accountData,
+}: {
   setAccountData: (data: FormattedPlayer | undefined) => void;
   accountData: FormattedPlayer | undefined;
+}) => {
+  if (accountData) return <VillageDataDisplay accountData={accountData} onBack={() => setAccountData(undefined)} />;
+
+  return <VillageDataInput setAccountData={setAccountData} />;
 };
 
-export const VillageDataForm = ({ setAccountData, accountData }: VillageDataFormProps) =>
-  accountData ? (
-    <VillageDataDisplay accountData={accountData} onBack={() => setAccountData(undefined)} />
-  ) : (
-    <VillageDataInput setAccountData={setAccountData} />
-  );
-
-const VillageDataInput = ({ setAccountData }: Pick<VillageDataFormProps, "setAccountData">) => {
-  const [tag, setTag] = useState("");
+const VillageDataInput = ({ setAccountData }: { setAccountData: (data: FormattedPlayer | undefined) => void }) => {
+  const [jsonData, setJsonData] = useState("");
   const [errorMessage, setErrorMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!tag) return;
+    if (!jsonData) return;
 
     setIsLoading(true);
-    const { data, error } = await getVillageData({ tag });
+    const { data, error } = await getVillageData({ data: jsonData });
 
     if (error) {
       setErrorMessage(error);
@@ -38,21 +38,29 @@ const VillageDataInput = ({ setAccountData }: Pick<VillageDataFormProps, "setAcc
   };
 
   return (
-    <div className="space-y-2">
-      <input
-        type="text"
-        placeholder="Enter player tag"
-        className="px-3 py-2 w-full rounded-xl border outline-none bg-secondary placeholder:text-placeholder border-secondary"
-        value={tag}
-        onChange={(e) => setTag(e.target.value)}
-      />
-      <button
-        className="grid place-items-center py-2 w-full text-center rounded-xl border transition-colors cursor-pointer bg-secondary border-secondary hover:bg-secondary-light"
-        onClick={handleSubmit}
-      >
-        {isLoading ? <span className="icon-[svg-spinners--3-dots-move] py-3" /> : "Load village"}
-      </button>
-      {errorMessage && <p className="text-sm text-center text-error">{errorMessage}</p>}
+    <div className="space-y-3">
+      <div className="space-y-2">
+        <input
+          type="text"
+          placeholder="Enter your village data"
+          className="px-3 py-2 w-full rounded-xl border outline-none bg-secondary placeholder:text-placeholder border-secondary"
+          value={jsonData}
+          onChange={(e) => setJsonData(e.target.value)}
+        />
+        <button
+          className="grid place-items-center py-2 w-full text-center rounded-xl border transition-colors cursor-pointer bg-secondary border-secondary hover:bg-secondary-light"
+          onClick={handleSubmit}
+        >
+          {isLoading ? <span className="icon-[svg-spinners--3-dots-move] py-3" /> : "Load village"}
+        </button>
+        {errorMessage && <p className="text-sm text-center text-error">{errorMessage}</p>}
+      </div>
+      {/* <div className="flex items-center gap-3">
+        <div className="bg-divider w-full h-[1px]" />
+        <span>or</span>
+        <div className="bg-divider w-full h-[1px]" />
+      </div>
+      <button className="bg-accent py-2 px-3 w-full border border-accent rounded-xl">Import from clipboard</button> */}
     </div>
   );
 };
@@ -84,18 +92,23 @@ const PlayerCard = ({ data }: { data: FormattedPlayer }) => (
   </div>
 );
 
-const LoadingStats = () => (
-  <div className="p-3 space-y-1 w-full">
-    {[
-      { label: "Heroes", interval: 200 },
-      { label: "Equipment", interval: 350 },
-      { label: "Troops", interval: 500 },
-      { label: "Spells", interval: 650 },
-    ].map((stat) => (
-      <LoadingStat key={stat.label} {...stat} />
-    ))}
-  </div>
-);
+const LoadingStats = () => {
+  const stats = [
+    { label: "Heroes", interval: 200 },
+    { label: "Equipment", interval: 350 },
+    { label: "Troops", interval: 500 },
+    { label: "Spells", interval: 650 },
+    { label: "Buildings", interval: 800 },
+  ];
+
+  return (
+    <div className="p-3 space-y-1 w-full">
+      {stats.map((stat) => (
+        <LoadingStat key={stat.label} interval={stat.interval} label={stat.label} />
+      ))}
+    </div>
+  );
+};
 
 const LoadingStat = ({ interval, label }: { interval: number; label: string }) => {
   const [isLoading, setIsLoading] = useState(true);

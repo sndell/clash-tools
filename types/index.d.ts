@@ -7,6 +7,7 @@ type Building = {
   }[];
   levels: BuildingLevel[];
   superchargeLevels?: SuperchargeLevel[];
+  dataId: number;
 };
 
 type BuildingLevel = {

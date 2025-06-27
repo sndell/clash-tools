@@ -144,4 +144,36 @@ type FormattedPlayer = Pick<
   | "spells"
 > & {
   townHallWeaponLevel: number;
+  buildings: FormattedBuildingData[];
+};
+
+type GameEntity = {
+  data: number;
+  lvl?: number;
+  cnt?: number;
+  timer?: number;
+  weapon?: number;
+  gear_up?: number;
+};
+
+type GameState = {
+  tag: string;
+  timestamp: number;
+  buildings: GameEntity[];
+  buildings2: GameEntity[];
+  traps: GameEntity[];
+  traps2: GameEntity[];
+  decos: { data: number; cnt: number }[];
+  decos2: { data: number; cnt: number }[];
+  obstacles: { data: number; cnt: number }[];
+  obstacles2: { data: number; cnt: number }[];
+  units: { data: number; lvl: number; timer?: number }[];
+  siege_machines: { data: number; lvl: number }[];
+  heroes: { data: number; lvl: number; timer?: number }[];
+  spells: { data: number; lvl: number }[];
+  pets: { data: number; lvl: number }[]; // empty array now, structure assumed
+  equipment: { data: number; lvl: number }[];
+  house_parts: number[];
+  skins: number[];
+  sceneries: number[];
 };

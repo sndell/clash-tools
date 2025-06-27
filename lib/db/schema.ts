@@ -9,7 +9,6 @@ export const clashVillage = pgTable("clash_village", {
   townHallLevel: integer("town_hall_level").notNull(),
   townHallWeaponLevel: integer("town_hall_weapon_level"),
   buildings: jsonb("buildings"),
-  calculatedBuildings: jsonb("calculated_buildings"),
   walls: jsonb("walls"),
   troops: jsonb("troops"),
   spells: jsonb("spells"),
