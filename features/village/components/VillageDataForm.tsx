@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getVillageData } from "../actions/getVillageData";
+import { getClashData } from "../actions/getClashData";
 import Image from "next/image";
 
 export const VillageDataForm = ({
@@ -25,7 +25,7 @@ const VillageDataInput = ({ setAccountData }: { setAccountData: (data: Formatted
     if (!jsonData) return;
 
     setIsLoading(true);
-    const { data, error } = await getVillageData({ data: jsonData });
+    const { data, error } = await getClashData({ data: jsonData });
 
     if (error) {
       setErrorMessage(error);

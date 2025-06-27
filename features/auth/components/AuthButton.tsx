@@ -11,8 +11,8 @@ export const AuthButton = () => {
   };
 
   const handleSignOut = async () => {
-    router.refresh();
     await signOut();
+    router.refresh();
   };
 
   const { data: session, isPending } = useSession();

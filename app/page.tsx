@@ -3,6 +3,7 @@
 import { getClashVillages } from "@/features/village/actions/getClashVillages";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Home() {
@@ -19,7 +20,7 @@ export default async function Home() {
       <div className="flex flex-col flex-1 justify-center items-center">
         <div>
           No villages found!{" "}
-          <Link href="/village/add" className="text-accent">
+          <Link href="/village/add" className="text-acent">
             Add one
           </Link>
         </div>
@@ -27,10 +28,24 @@ export default async function Home() {
     );
 
   return (
-    <div>hello</div>
-    // <div className="grid grid-rows-2 gap-3 md:grid-cols-2">
-    //   <VillageOverview />
-    //   <StatisticsOverview />
-    // </div>
+    <div className="grid grid-cols-3 p-3">
+      {villages.map((village) => (
+        <Link
+          key={village.tag}
+          href={`/village/${village.tag.replace("#", "")}`}
+          className="flex gap-2 p-3 rounded-xl border transition-colors cursor-pointer bg-primary border-primary hover:bg-primary-light"
+        >
+          <Image
+            src={`/images/town-hall/Town_Hall${village.townHallLevel}.webp`}
+            alt={village.name}
+            width={80}
+            height={80}
+          />
+          <div>
+            {village.name} <span className="text-sm text-primary-dark">{village.tag}</span>
+          </div>
+        </Link>
+      ))}
+    </div>
   );
 }
