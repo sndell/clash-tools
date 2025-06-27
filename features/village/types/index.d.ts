@@ -131,20 +131,14 @@ type Player = {
 
 type FormattedPlayer = Pick<
   Player,
-  | "name"
-  | "tag"
-  | "townHallLevel"
-  | "expLevel"
-  | "league"
-  | "trophies"
-  | "clan"
-  | "heroes"
-  | "heroEquipment"
-  | "troops"
-  | "spells"
+  "name" | "tag" | "townHallLevel" | "expLevel" | "trophies" | "heroes" | "heroEquipment" | "troops" | "spells"
 > & {
   townHallWeaponLevel: number;
-  buildings: FormattedBuildingData[];
+  buildings: BuildingData[];
+  league: string | null;
+  clanName: string;
+  clanTag: string;
+  clanUrl: string;
 };
 
 type GameEntity = {

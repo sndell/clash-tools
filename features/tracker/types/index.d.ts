@@ -1,27 +1,8 @@
-import { InferSelectModel } from "drizzle-orm";
-
-type BuildingInstanceLevel = {
+type BuildingInstance = {
   level: number;
 };
 
-type BuildingInstance = BuildingInstanceLevel & {
-  isMerged: boolean;
-  isNew: boolean;
-};
-
-type BuildingLevelData = {
-  instances: BuildingInstanceLevel[];
+type BuildingData = {
+  instances: BuildingInstance[];
   name: string;
-};
-
-type BuildingData = BuildingLevelData & {
-  levels: BuildingLevel[];
-};
-
-export type DbPlayer = InferSelectModel<typeof clashVillage> & {
-  buildings: BuildingLevelData[];
-  spells: Spell[];
-  heroes: Hero[];
-  heroEquipment: HeroEquipment[];
-  troops: Troop[];
 };

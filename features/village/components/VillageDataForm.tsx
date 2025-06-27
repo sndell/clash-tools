@@ -55,12 +55,6 @@ const VillageDataInput = ({ setAccountData }: { setAccountData: (data: Formatted
         </button>
         {errorMessage && <p className="text-sm text-center text-error">{errorMessage}</p>}
       </div>
-      {/* <div className="flex items-center gap-3">
-        <div className="bg-divider w-full h-[1px]" />
-        <span>or</span>
-        <div className="bg-divider w-full h-[1px]" />
-      </div>
-      <button className="bg-accent py-2 px-3 w-full border border-accent rounded-xl">Import from clipboard</button> */}
     </div>
   );
 };

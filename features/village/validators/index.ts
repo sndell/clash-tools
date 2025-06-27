@@ -9,7 +9,7 @@ const GameEntity = z.object({
   gear_up: z.number().optional(),
 });
 
-const GameStateSchema = z.object({
+export const GameStateSchema = z.object({
   tag: z.string(),
   timestamp: z.number(),
   buildings: z.array(GameEntity),
@@ -30,8 +30,3 @@ const GameStateSchema = z.object({
   skins: z.array(z.number()),
   sceneries: z.array(z.number()),
 });
-
-export const validateGameState = (data: string) => {
-  const parsedData = JSON.parse(data);
-  return GameStateSchema.parse(parsedData);
-};

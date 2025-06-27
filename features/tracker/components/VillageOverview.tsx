@@ -9,7 +9,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import { AnimatePresence, motion } from "motion/react";
 import { useTracker } from "../context/TrackerConctext";
 
-export const VillageOverview = ({ name, tag }: { name: string; tag: string }) => {
+export const VillageOverview = ({ name, tag, townHallLevel }: { name: string; tag: string; townHallLevel: number }) => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
 
   const handleRefresh = () => {
@@ -21,13 +21,8 @@ export const VillageOverview = ({ name, tag }: { name: string; tag: string }) =>
   };
 
   return (
-    <article
-      className={cn(
-        "grid flex-1 rounded-xl border divide-x grid-cols-[auto_1fr] bg-primary border-primary divide-primary",
-        isCategoryMenuOpen && "rounded-br-none"
-      )}
-    >
-      <TownHallSection />
+    <article className="grid flex-1 rounded-xl border divide-x grid-cols-[auto_1fr] bg-primary border-primary divide-primary">
+      <TownHallSection townHallLevel={townHallLevel} />
 
       <div className="w-full min-w-0">
         <VillageHeader name={name} tag={tag} onRefresh={handleRefresh} onEdit={handleEdit} />
@@ -38,10 +33,10 @@ export const VillageOverview = ({ name, tag }: { name: string; tag: string }) =>
   );
 };
 
-const TownHallSection = () => (
+const TownHallSection = ({ townHallLevel }: { townHallLevel: number }) => (
   <div className="grid overflow-hidden flex-shrink-0 place-items-center p-3 h-full aspect-square">
     <Image
-      src="/images/th17.webp"
+      src={`/images/town-hall/Town_Hall${townHallLevel}.webp`}
       alt="Town Hall Level 17"
       width={56}
       height={56}
@@ -155,7 +150,7 @@ const CategoryDropdown = ({
 }) => (
   <motion.div
     ref={ref}
-    className="absolute top-10 right-[-0.5px] w-[calc(100%+1.5px)] z-30 overflow-hidden bg-secondary border border-secondary rounded-b-xl"
+    className="absolute top-11 sm:top-10 right-[-1px] w-[calc(100%+1.5px)] z-30 overflow-hidden bg-secondary border border-secondary rounded-b-xl"
     initial={{ height: 0 }}
     animate={{ height: "auto" }}
     exit={{ height: 0 }}
@@ -186,7 +181,7 @@ const CategoryMenuItem = ({
   onClick: (category: keyof typeof CATEGORIES) => void;
   progress: number;
 }) => (
-  <div className="relative w-full h-10 cursor-pointer group" onClick={() => onClick(category)}>
+  <div className="relative w-full h-11 cursor-pointer sm:h-10 group" onClick={() => onClick(category)}>
     <div className="absolute left-0 h-full bg-primary-light" style={{ width: `${progress}%` }} />
     <div className="flex absolute top-0 left-0 gap-2 justify-center items-center w-full h-full">
       <span

@@ -2,15 +2,14 @@
 
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { CATEGORIES } from "../data";
-import { InferSelectModel } from "drizzle-orm";
-import { clashVillage } from "@/lib/db/schema";
 import { allBuildings } from "@/data/structures";
-import { DbPlayer } from "../types";
 
 type DisplayData = {
   name: string;
-  levels: number | { [key: number]: number; imageUrl?: string }[];
+  instances: number[];
   category: string;
+  levels: BuildingLevel[];
+  superchargeLevels?: SuperchargeLevel[];
 };
 
 type TrackerContextType = {
@@ -19,9 +18,11 @@ type TrackerContextType = {
   displayData: DisplayData[];
 };
 
+const EXCLUDED_BUILDINGS = ["TH12 Weapon", "TH13 Weapon", "TH14 Weapon", "TH15 Weapon", "TH17 Weapon", "Town Hall"];
+
 const TrackerContext = createContext<TrackerContextType | undefined>(undefined);
 
-export const TrackerProvider = ({ children, village }: { children: ReactNode; village: DbPlayer }) => {
+export const TrackerProvider = ({ children, village }: { children: ReactNode; village: FormattedPlayer }) => {
   const [category, setCategory] = useState<keyof typeof CATEGORIES>("Everything");
   const [displayData, setDisplayData] = useState<DisplayData[]>([]);
 
@@ -30,14 +31,31 @@ export const TrackerProvider = ({ children, village }: { children: ReactNode; vi
   useEffect(() => {
     switch (category) {
       case "Buildings":
-        const buildings: DisplayData[] = allBuildings.map((building) => {
-          const buildingData = village.buildings.find((b) => b.name === building.name);
-          return {
-            name: building.name,
-            levels: buildingData?.instances.map((instance) => instance.level) ?? [],
-            category: building.category,
-          };
-        });
+        const buildings: DisplayData[] = allBuildings
+          .map((building) => {
+            const buildingData = village.buildings.find((b) => b.name === building.name);
+            if (EXCLUDED_BUILDINGS.includes(building.name)) return null;
+
+            if (!buildingData)
+              return {
+                name: building.name,
+                instances: [],
+                category: building.category,
+                levels: building.levels,
+                superchargeLevels: building.superchargeLevels,
+              };
+
+            return {
+              name: building.name,
+              instances: buildingData?.instances.map((instance) => instance.level) ?? [],
+              category: building.category,
+              levels: building.levels,
+              superchargeLevels: building.superchargeLevels,
+            };
+          })
+          .filter((data) => data !== null);
+        console.log(buildings);
+
         setDisplayData(buildings);
         break;
       default:

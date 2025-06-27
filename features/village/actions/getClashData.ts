@@ -2,7 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { validateGameState } from "../validators";
+import { GameStateSchema } from "../validators";
 import { allBuildings } from "@/data/structures";
 import { checkExistingAccount } from "../util";
 
@@ -16,8 +16,17 @@ export async function getClashData({ data }: { data: string }) {
     const session = await auth.api.getSession({ headers: await headers() });
     if (!session) return { error: "Unauthorized" };
 
-    const gameState = validateGameState(data);
-    const formattedTag = formatPlayerTag(gameState.tag);
+    let parsedData;
+    try {
+      parsedData = JSON.parse(data);
+    } catch {
+      return { error: "Invalid game data" };
+    }
+
+    const validation = GameStateSchema.safeParse(parsedData);
+    if (!validation.success) return { error: "Invalid game data" };
+
+    const formattedTag = formatPlayerTag(validation.data.tag);
 
     const playerData = await fetchPlayerData(formattedTag);
     if (!playerData.tag) return { error: "Error loading village data" };
@@ -25,11 +34,13 @@ export async function getClashData({ data }: { data: string }) {
     const accountExists = await checkExistingAccount(session.user.id, formattedTag);
     if (accountExists) return { error: "Village with tag already added" };
 
-    const buildings = formatBuildings(gameState);
+    const buildings = formatBuildings(validation.data);
     const formattedPlayer = formatPlayer(playerData, buildings);
 
     return { data: formattedPlayer };
   } catch (error) {
+    console.log(error);
+
     return { error: "Internal server error" };
   }
 }
@@ -49,14 +60,16 @@ const fetchPlayerData = async (formattedTag: string): Promise<Player> => {
   return response.json();
 };
 
-const formatBuildings = (gameState: GameState): BuildingLevelData[] => {
-  const buildingsMap = new Map<string, BuildingLevelData>();
+const formatBuildings = (gameState: GameState): BuildingData[] => {
+  const buildingsMap = new Map<string, BuildingData>();
 
-  gameState.buildings.forEach((building) => {
+  const buildingsAndTraps = [...gameState.buildings, ...gameState.traps];
+
+  buildingsAndTraps.forEach((building) => {
     const buildingData = allBuildings.find((b) => b.dataId === building.data);
     if (!buildingData) return;
 
-    const instances: BuildingInstanceLevel[] = Array.from({ length: building.cnt ?? 1 }, () => ({
+    const instances: BuildingInstance[] = Array.from({ length: building.cnt ?? 1 }, () => ({
       level: building.lvl ?? 0,
     }));
 
@@ -74,7 +87,7 @@ const formatBuildings = (gameState: GameState): BuildingLevelData[] => {
   return Array.from(buildingsMap.values());
 };
 
-const formatPlayer = (player: Player, buildings: BuildingLevelData[]): FormattedPlayer => ({
+const formatPlayer = (player: Player, buildings: BuildingData[]): FormattedPlayer => ({
   name: player.name,
   tag: player.tag,
   townHallLevel: player.townHallLevel,
@@ -84,8 +97,10 @@ const formatPlayer = (player: Player, buildings: BuildingLevelData[]): Formatted
   troops: player.troops.filter((troop) => troop.village === "home"),
   spells: player.spells.filter((spell) => spell.village === "home"),
   expLevel: player.expLevel,
-  league: player.league,
+  league: player.league.name,
   trophies: player.trophies,
-  clan: player.clan,
   buildings,
+  clanName: player.clan.name,
+  clanTag: player.clan.tag,
+  clanUrl: player.clan.badgeUrls.medium,
 });
